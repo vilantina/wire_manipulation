@@ -94,8 +94,8 @@ class ArucoTracker:
                 cv2.drawFrameAxes(frame, self.matrix_coefficients, self.distortion_coefficients, rvec, tvec, .2) 
 
         # Display the resulting frame
-        cv2.imshow('frame', frame) 
-        cv2.waitKey(1)
+        # cv2.imshow('frame', frame) 
+        # cv2.waitKey(1)
 
     def get_depth_data(self,data):
         cv_depth_image = self.bridge_object.imgmsg_to_cv2(data)

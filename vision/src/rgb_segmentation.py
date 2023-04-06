@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import rospy
-from sensor_msgs.msg import Image, CameraInfo
+from sensor_msgs.msg import Image, CameraInfo, CompressedImage
 from cv_bridge import CvBridge,CvBridgeError
 import cv2
 import numpy as np 
@@ -9,10 +9,14 @@ from geometry_msgs.msg import Pose
 class RGBSegmentation(object):
     def __init__(self):
         # Subscribers to Camera
-        self.aligned_depth_rgb_sub = rospy.Subscriber("/camera/aligned_depth_to_color/image_raw", Image, self.get_depth_data,queue_size=1)
-        self.rgb_img_sub = rospy.Subscriber("/camera/color/image_raw",Image, self.rgb_callback,queue_size=1)
-        self.depth_img_camera_info = rospy.Subscriber("/camera/aligned_depth_to_color/camera_info",CameraInfo, self.depth_cam_info_callback,queue_size=1)
+        # self.aligned_depth_rgb_sub = rospy.Subscriber("/camera/aligned_depth_to_color/image_raw", Image, self.get_depth_data,queue_size=1)
+        # self.rgb_img_sub = rospy.Subscriber("/camera/color/image_raw",Image, self.rgb_callback,queue_size=1)
+        # self.depth_img_camera_info = rospy.Subscriber("/camera/aligned_depth_to_color/camera_info",CameraInfo, self.depth_cam_info_callback,queue_size=1)
         
+        self.aligned_depth_rgb_sub = rospy.Subscriber("/cam_0/aligned_depth_to_color/image_raw/compressed", CompressedImage, self.get_depth_data,queue_size=1)
+        self.rgb_img_sub = rospy.Subscriber("/cam_0/color/image_raw/compressed",CompressedImage, self.rgb_callback,queue_size=1)
+        self.depth_img_camera_info = rospy.Subscriber("/cam_0/aligned_depth_to_color/camera_info",CameraInfo, self.depth_cam_info_callback,queue_size=1)
+
         # Publishers with segmented image info
         self.image_pub = rospy.Publisher("/rs_segmented_image", Image, queue_size=1)
         self.depth_image_pub = rospy.Publisher("/seg_depth/image_raw", Image, queue_size=1)
@@ -26,7 +30,11 @@ class RGBSegmentation(object):
 
     def rgb_callback(self,data):
         try:
-            cv_image = self.bridge_object.imgmsg_to_cv2(data, desired_encoding="bgr8")
+            # cv_image = self.bridge_object.imgmsg_to_cv2(data, desired_encoding="bgr8")
+            cv_image = self.bridge_object.compressed_imgmsg_to_cv2(data, desired_encoding="bgr8")
+            # preview = cv2.resize(cv_image, (1280,720), interpolation=cv2.INTER_LINEAR)
+            # cv2.imshow('cv_image', preview) 
+            # cv2.waitKey(1)
         except CvBridgeError as e:
             print(e)
         rospy.sleep(0.01)
@@ -90,7 +98,10 @@ class RGBSegmentation(object):
         self.depth_img_cam_info_pub.publish(cam_info)
 
     def get_depth_data(self,data):
-        cv_depth_image = self.bridge_object.imgmsg_to_cv2(data)
+        # cv_depth_image = self.bridge_object.imgmsg_to_cv2(data)
+        cv_depth_image = self.bridge_object.compressed_imgmsg_to_cv2(data)
+        # cv2.imshow('cv_depth_image', cv_depth_image) 
+        # cv2.waitKey(30)
         self.depth_data = cv_depth_image
 
     def depth_cam_info_callback( self,msg):
