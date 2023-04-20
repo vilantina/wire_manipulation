@@ -88,8 +88,8 @@ class RGBSegmentation(object):
         segmented_img.header.frame_id = "cam_0_color_optical_frame"
 
         # Segmented Depth Image
-        #ENCODING ISSUE IS HERE
-        self.seg_depth_img = self.bridge_object.cv2_to_imgmsg(new_depth_img, encoding="passthrough") # ERROR not numpy array or scalar
+        #ENCODING ISSUE IS HERE, WE USE 16UC1 vs 8UC1 issue
+        self.seg_depth_img = self.bridge_object.cv2_to_imgmsg(new_depth_img, encoding="mono16") # ERROR not numpy array or scalar
         self.seg_depth_img.header.stamp = cam_info.header.stamp
         self.seg_depth_img.header.frame_id = "cam_0_color_optical_frame"
 
