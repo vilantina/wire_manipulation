@@ -54,8 +54,6 @@ def get_final_node_set(sorted_points,N):
 
     return final_node_set    
 
-
-
 def callback(data):
     pc = ros_numpy.numpify(data)
     points=np.zeros((len(pc)*len(pc[0]),3))

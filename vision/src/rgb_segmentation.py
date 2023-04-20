@@ -44,36 +44,36 @@ class RGBSegmentation(object):
         upper_color = np.array([179, 255, 255])
         hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv, lower_color, upper_color)
-        new_img = cv2.bitwise_and(cv_image, cv_image, mask = mask )
+        new_img = cv2.bitwise_and(cv_image, cv_image, mask = mask ) # pass
 
         # dilation
         kernel = np.ones((5,5), np.uint8)
         img_dilation = cv2.dilate(new_img, kernel, iterations=1)
-        img_dilation_gray = cv2.cvtColor(img_dilation,cv2.COLOR_BGR2GRAY)
+        img_dilation_gray = cv2.cvtColor(img_dilation,cv2.COLOR_BGR2GRAY) # pass
         
         # find largest contour
         contours, hierch = cv2.findContours(img_dilation_gray, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         largest_area = sorted(contours, key= cv2.contourArea)
         mask2 = np.zeros(img_dilation_gray.shape, np.uint8)
 
-        filtered_wire = cv2.drawContours(mask2,[largest_area[-1]], 0, (255,255,255,255), -1)
+        filtered_wire = cv2.drawContours(mask2,[largest_area[-1]], 0, (255,255,255,255), -1) # pass
 
         # erosion
-        img_erosion = cv2.erode(filtered_wire, kernel, iterations=2)
+        img_erosion = cv2.erode(filtered_wire, kernel, iterations=2) # pass
 
         # Get copy of depth image
         depth = self.depth_data
         depth_copy = depth.copy()
 
         # use segmented RGB image as mask for depth image
-        new_depth_img = cv2.bitwise_and(depth_copy, depth_copy, mask = img_erosion )
+        new_depth_img = cv2.bitwise_and(depth_copy, depth_copy, mask = img_erosion ) # pass
 
         # Define Camera info for publish
         cam_info = CameraInfo()
         cam_info.header.stamp = rospy.Time.now()
-        cam_info.header.frame_id = "camera_color_optical_frame"
-        cam_info.height = 720
-        cam_info.width = 1280
+        cam_info.header.frame_id = "cam_0_color_optical_frame"
+        cam_info.height = 1080
+        cam_info.width = 1920
         cam_info.distortion_model = "plumb_bob"
         cam_info.D = self.depth_cam_info.D
         cam_info.K = self.depth_cam_info.K
@@ -84,14 +84,15 @@ class RGBSegmentation(object):
         cam_info.roi = self.depth_cam_info.roi
 
         # Segmented RGB Image
-        segmented_img = self.bridge_object.cv2_to_imgmsg(new_img,"passthrough")
-        segmented_img.header.frame_id = "camera_color_optical_frame"
+        segmented_img = self.bridge_object.cv2_to_imgmsg(new_img, encoding="passthrough") # ERROR not numpy array or scalar
+        segmented_img.header.frame_id = "cam_0_color_optical_frame"
 
-        # Segmneted Depth Image
-        self.seg_depth_img = self.bridge_object.cv2_to_imgmsg(new_depth_img)
+        # Segmented Depth Image
+        #ENCODING ISSUE IS HERE
+        self.seg_depth_img = self.bridge_object.cv2_to_imgmsg(new_depth_img, encoding="passthrough") # ERROR not numpy array or scalar
         self.seg_depth_img.header.stamp = cam_info.header.stamp
-        self.seg_depth_img.header.frame_id = "camera_color_optical_frame"
-    
+        self.seg_depth_img.header.frame_id = "cam_0_color_optical_frame"
+
         # Publish
         self.image_pub.publish(segmented_img)
         self.depth_image_pub.publish(self.seg_depth_img)

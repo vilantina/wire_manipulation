@@ -236,7 +236,9 @@ def process_point_cloud(req):
     marker_.publish(markers)
     wire_length = get_wire_length(final_node_set)
 
-    
+    # print(pose_array)
+    print(wire_length)
+    # print(raw_points)
     return ProcessPointCloudResponse(pose = pose_array, wire_length = wire_length, raw_points = raw_points, wire_class = wire_class)
     
  
