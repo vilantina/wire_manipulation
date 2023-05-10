@@ -15,7 +15,7 @@ class RGBSegmentation(object):
         
         self.aligned_depth_rgb_sub = rospy.Subscriber("/cam_0/aligned_depth_to_color/image_raw/compressed", CompressedImage, self.get_depth_data,queue_size=1)
         self.rgb_img_sub = rospy.Subscriber("/cam_0/color/image_raw/compressed",CompressedImage, self.rgb_callback,queue_size=1)
-        self.depth_img_camera_info = rospy.Subscriber("/cam_0/aligned_depth_to_color/camera_info",CameraInfo, self.depth_cam_info_callback,queue_size=1)
+        self.depth_img_camera_info = rospy.Subscriber("/cam_0/depth/camera_info",CameraInfo, self.depth_cam_info_callback,queue_size=1)
 
         # Publishers with segmented image info
         self.image_pub = rospy.Publisher("/rs_segmented_image", Image, queue_size=1)
@@ -28,13 +28,15 @@ class RGBSegmentation(object):
         self.depth_cam_info = CameraInfo()
         self.seg_depth_img = Image()
 
+    def preview_img(self, img):
+        preview = cv2.resize(img, (1280,720), interpolation=cv2.INTER_LINEAR)
+        cv2.imshow('cv_image', preview) 
+        cv2.waitKey(1)
+
     def rgb_callback(self,data):
         try:
             # cv_image = self.bridge_object.imgmsg_to_cv2(data, desired_encoding="bgr8")
             cv_image = self.bridge_object.compressed_imgmsg_to_cv2(data, desired_encoding="bgr8")
-            # preview = cv2.resize(cv_image, (1280,720), interpolation=cv2.INTER_LINEAR)
-            # cv2.imshow('cv_image', preview) 
-            # cv2.waitKey(1)
         except CvBridgeError as e:
             print(e)
         rospy.sleep(0.01)
@@ -66,7 +68,7 @@ class RGBSegmentation(object):
         depth_copy = depth.copy()
 
         # use segmented RGB image as mask for depth image
-        new_depth_img = cv2.bitwise_and(depth_copy, depth_copy, mask = img_erosion ) # pass
+        new_depth_img = cv2.bitwise_and(depth_copy, depth_copy, mask = img_erosion )
 
         # Define Camera info for publish
         cam_info = CameraInfo()
@@ -89,7 +91,7 @@ class RGBSegmentation(object):
 
         # Segmented Depth Image
         #ENCODING ISSUE IS HERE, WE USE 16UC1 vs 8UC1 issue
-        self.seg_depth_img = self.bridge_object.cv2_to_imgmsg(new_depth_img, encoding="mono16") # ERROR not numpy array or scalar
+        self.seg_depth_img = self.bridge_object.cv2_to_imgmsg(new_depth_img) # ERROR not numpy array or scalar
         self.seg_depth_img.header.stamp = cam_info.header.stamp
         self.seg_depth_img.header.frame_id = "cam_0_color_optical_frame"
 
@@ -101,8 +103,6 @@ class RGBSegmentation(object):
     def get_depth_data(self,data):
         # cv_depth_image = self.bridge_object.imgmsg_to_cv2(data)
         cv_depth_image = self.bridge_object.compressed_imgmsg_to_cv2(data)
-        # cv2.imshow('cv_depth_image', cv_depth_image) 
-        # cv2.waitKey(30)
         self.depth_data = cv_depth_image
 
     def depth_cam_info_callback( self,msg):
