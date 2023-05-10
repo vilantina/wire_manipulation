@@ -86,18 +86,26 @@ class RGBSegmentation(object):
         cam_info.roi = self.depth_cam_info.roi
 
         # Segmented RGB Image
-        segmented_img = self.bridge_object.cv2_to_imgmsg(new_img, encoding="passthrough") # ERROR not numpy array or scalar
-        segmented_img.header.frame_id = "cam_0_color_optical_frame"
+        segmented_img = self.bridge_object.cv2_to_imgmsg(new_img, encoding="passthrough") # ERROR not numpy array or scalar expected
+        segmented_img.header.frame_id = "cam_0_color_optical_frame" 
 
         # Segmented Depth Image
         #ENCODING ISSUE IS HERE, WE USE 16UC1 vs 8UC1 issue
-        self.seg_depth_img = self.bridge_object.cv2_to_imgmsg(new_depth_img) # ERROR not numpy array or scalar
+        self.seg_depth_img = self.bridge_object.cv2_to_imgmsg(new_depth_img, encoding="16UC1") # ERROR not numpy array or scalar expected
         self.seg_depth_img.header.stamp = cam_info.header.stamp
         self.seg_depth_img.header.frame_id = "cam_0_color_optical_frame"
 
         # Publish
         self.image_pub.publish(segmented_img)
         self.depth_image_pub.publish(self.seg_depth_img)
+        """
+        Nodelet manager in bringup.launch file subscribes to this in its image_rect subscribed topic
+        <remap from="image_rect" to="/seg_depth/image_raw"/>
+        Commenting out this line from the launch file removes the encoding 8UC1 error.
+        This topic is created and published here in rgb_segmentation. 
+        This means the encoding issue is somewhere in how self.seg_depth_img is created and ultimately published.
+        Currently in 8UC1, need to get it to
+        """
         self.depth_img_cam_info_pub.publish(cam_info)
 
     def get_depth_data(self,data):
