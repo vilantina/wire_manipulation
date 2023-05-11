@@ -92,7 +92,8 @@ def process_point_cloud(req):
 
     # Find outliers 
     outliers = []
-    threshold = 0.05 # a point whos closest neighbor is greater than 0.1m away is considered an outlier 
+    # threshold = 0.05 # a point whos closest neighbor is greater than 0.1m away is considered an outlier 
+    threshold = 0.11
     # maximum distance as the maximum a point should be spaced from a neighboring point
 
     # For each kmeans cluster in point cloud data of N=20 nodes,
@@ -107,7 +108,7 @@ def process_point_cloud(req):
             
         # check outlier condition    
         if min_dist > threshold: 
-            print("min_dis: {} threshold: {}".format(min_dist, threshold))
+            # print("min_dis: {} threshold: {}".format(min_dist, threshold))
             outliers.append(k)
 
     print("CHECK OUTLIERS\n", outliers)
