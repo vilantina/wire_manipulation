@@ -85,8 +85,8 @@ if __name__ == "__main__":
 
     # # Process PC data to get estimated nodes on wire
     # this is process_point_cloud_server's Service, need points to pass to it
-    # print("STATUS: Processing Pc with process_point_cloud_server")
-    # wire_nodes = process_point_cloud_client(points) # output data structure is a posearray
+    print("STATUS: Processing Pc with process_point_cloud_server")
+    wire_nodes = process_point_cloud_client(points) # output data structure is a posearray
 
     # # Convert PoseArray into Numpy Array
     # wire = np.zeros((3,20))

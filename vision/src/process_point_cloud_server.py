@@ -93,19 +93,24 @@ def process_point_cloud(req):
     # Find outliers 
     outliers = []
     threshold = 0.05 # a point whos closest neighbor is greater than 0.1m away is considered an outlier 
+    # maximum distance as the maximum a point should be spaced from a neighboring point
 
+    # For each kmeans cluster in point cloud data of N=20 nodes,
+    # if min_dist is greater than some threshold, it is an outlier and removed from C
     for k in range(N):
         min_dist = 5
         for j in range(N):
             if k != j:
-                dist = ((C[k,0] - C[j,0])**2 + (C[k,1] - C[j,1])**2 + (C[k,2] - C[j,2])**2 )**0.5
+                dist = ((C[k,0] - C[j,0])**2 + (C[k,1] - C[j,1])**2 + (C[k,2] - C[j,2])**2 )**0.5 # euclidean distance formula
                 if dist < min_dist:
                     min_dist = dist
             
         # check outlier condition    
         if min_dist > threshold: 
+            print("min_dis: {} threshold: {}".format(min_dist, threshold))
             outliers.append(k)
-        
+
+    print("CHECK OUTLIERS\n", outliers)
     # Get rid of outliers 
     # reduce your array
     size_of_outliers = len(outliers)
@@ -141,6 +146,7 @@ def process_point_cloud(req):
     # find the element with the most extreme values
     # ex. element 6 might hold the max x and min z. Likley an end point
     # use this point as a starting point
+    print(new_points)
     min_y = max_y = new_points[0,1]
     min_z = max_z = new_points[0,2]
     extrema_elements = np.zeros(4) # [min_y, max_y, min_z, max_z]
