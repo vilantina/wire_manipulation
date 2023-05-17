@@ -141,7 +141,7 @@ def process_point_cloud(req):
     ROT = rotm(-angle,angle,0)
 
     for i in range(len(new_points)):
-        new_points[[i],:] = np.transpose(ROT@np.transpose(new_points[[i],:])) + np.array((-0.3556,0.015,0.4064))
+        new_points[[i],:] = np.transpose(ROT@np.transpose(new_points[[i],:])) #+ np.array((-0.3556,0.015,0.4064))
 
     # check the extreme points ( maz min x,y,z)
     # find the element with the most extreme values
