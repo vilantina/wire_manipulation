@@ -329,7 +329,7 @@ class WireSim:
         
         # find pick and pull actions for the returned wire config
         optimal_pull_action = normal_vecs[:,[optimal]]
-        optimal_pick_action = wire[:,[grasp_index]]
+        optimal_pick_action = wire[:,[grasp_index]] # take this node from wires, array of nodes where each node is an x,y,z array
 
         # Predict the end effector position at the end of the trajectory to move the wire
         future_ee_point = np.array([optimal_pick_action[0] + optimal_pull_action[0],
@@ -438,7 +438,7 @@ class WireSim:
     
       return plane_distance
 
-  def get_grasp_index(self,wire):
+  def get_grasp_index(self,wire): # this index becomes the index of wire[] that is pick point
       # Based on the classified wire type from the state estimation block, a grasp point will selected 
       #     type1 = vertical 
       #     type2 = horizontal 
