@@ -18,7 +18,8 @@ from mpl_toolkits import mplot3d
 from matplotlib import pyplot
 
 # Transform publishing
-from tf.transformations import quaternion_from_euler, quaternion_about_axis
+from tf.transformations import quaternion_from_euler, quaternion_about_axis, euler_from_quaternion
+import tf2_geometry_msgs, geometry_msgs.msg
 import tf2_ros
 from geometry_msgs.msg import TransformStamped
 import math
@@ -42,45 +43,32 @@ def transform_connector_match_cam(child_name: str, source: str, cam_spec, pos_ad
         transform = None
         try:
             transform = tf_buffer.lookup_transform(source, cam_spec, rospy.Time())
-            rotation = transform.transform.rotation
 
-            # transform2 = tf_buffer.lookup_transform("a_bot_ee_arm_link", cam_spec, rospy.Time())
-            # print(transform2.transform.rotation)
         except Exception as e:
             print(e)
         if not transform:
              return
+        
+        # Align Z axes here from grasp frame to camera frame
+        rotation = transform.transform.rotation
+        roll, pitch, yaw = euler_from_quaternion([rotation.x, rotation.y, rotation.z, rotation.w])
+        q = quaternion_from_euler(0, yaw, 0) # either pitch or yaw, yaw looks more correct? test with arm cam
 
-        # q = quaternion_from_euler(pos_adj[0], pos_adj[1], pos_adj[2]) # pos_adj
-        # # q = quaternion_from_euler(-math.pi/2,math.pi/2,0) # match rotation of bot grippers
-
-        """
-        Combinations: 
-        - y/w need to flip 180 (worst)
-        - z/y move blue up pi/2
-        - xz exactly upright
-        - zw flip 180
-        """
-        pitch = math.atan2(rotation.x, rotation.z)  
-
-        q = quaternion_from_euler(0, pitch, 0) # match rotation of bot grippers
-        # print(q,'\n')
+        # Set new axes
         t.transform.rotation.x = q[0]
         t.transform.rotation.y = q[1]
         t.transform.rotation.z = q[2]
         t.transform.rotation.w = q[3]
 
-        # t.transform.rotation.x = rotation.x
-        # t.transform.rotation.y = rotation.y
-        # t.transform.rotation.z = rotation.z
-        # t.transform.rotation.w = rotation.w
-
+        # Apply the new transformation to frame A
         br.sendTransform(t)
 
 def main():
     rate = rospy.Rate(60)
     rear_cam_spec = "mounted_cam"
     arm_cam_spec = "arm_cam"
+    # CAM_SPEC = "mounted"
+    # cam_spec_name = "d415_color_frame" if 
 
     while not rospy.is_shutdown():
         transform_connector_match_cam("adj_grasp_mounted_cam", "line_grasp_mounted_cam", "d415_color_frame", [0,0,0], [0, 0, 0, 1])

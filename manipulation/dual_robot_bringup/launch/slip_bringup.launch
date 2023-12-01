@@ -33,8 +33,11 @@
   <node pkg="vision" type="rgbd_segmentation.py" name="rgbd_segmentation" output="screen"/> 
   <!-- ML TRACKING -->
   <!-- <node pkg="vision" type="mounted_ml_tracker.py" name="mounted_ml_tracker" output="screen"/>  -->
+  <!-- DEPTH IMAGE SEGMENTED PC TRACKING -->
+  <node pkg="vision" type="depth_tracker.py" name="depth_tracker" output="screen"/>
+  
   <!-- Process Connector to produce Frame for Grasp -->
-  <!-- <node pkg="vision" type="proc_connector_pc.py" name="proc_connector_pc" output="screen"/>  -->
+  <node pkg="vision" type="proc_connector_pc.py" name="proc_connector_pc" output="screen"/> 
   <!-- Adjust connector to match orientation of camera -->
   <!-- <node pkg="vision" type="match_connector_cam.py" name="match_connector_cam" output="screen"/> 
   <node pkg="vision" type="final_connector_pose.py" name="final_connector_pose" output="screen"/>  -->

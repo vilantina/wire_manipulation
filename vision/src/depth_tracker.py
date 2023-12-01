@@ -144,7 +144,7 @@ def set_cam_spec_srv(request):
     return SetBoolResponse(request.data, f"Cam spec set to {CAM_SPEC}")
 
 def main():
-    rospy.init_node("ml_tracker",anonymous=True)
+    rospy.init_node("depth_tracker",anonymous=True)
     rospy.sleep(3)
     rate = rospy.Rate(60)
 
