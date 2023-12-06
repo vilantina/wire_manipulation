@@ -51,39 +51,42 @@ class ConnectorPC():
 
     ### Callbacks
     def pc_callback(self, points):
+        
         if not points:
             return # empty/no view
         REMOVE_OUTLIERS = True
         REMOVE_OUTLIER_METHOD = "mean_std_dev"
     
         # print("before:", len(ros_numpy.point_cloud2.pointcloud2_to_xyz_array(points)))
+        try:
+            # Filter pc2 for outliers if REMOVE_OUTLIERS
+            if REMOVE_OUTLIERS:
+                if REMOVE_OUTLIER_METHOD == "mean_std_dev":
+                    pc2_points = self.remove_outliers_msd(points, 2.0)
+                elif REMOVE_OUTLIER_METHOD == "others to implement?":
+                    pass
+            else:
+                pc2_points = points
+            # Save filtered pointcloud2 in instance
+            self.source_pc = pc2_points
+            self.numpy_pc  = ros_numpy.point_cloud2.pointcloud2_to_xyz_array(self.source_pc)
+            # print("after:", len(self.numpy_pc))
 
-        # Filter pc2 for outliers if REMOVE_OUTLIERS
-        if REMOVE_OUTLIERS:
-            if REMOVE_OUTLIER_METHOD == "mean_std_dev":
-                pc2_points = self.remove_outliers_msd(points, 2.0)
-            elif REMOVE_OUTLIER_METHOD == "others to implement?":
-                pass
-        else:
-            pc2_points = points
-        # Save filtered pointcloud2 in instance
-        self.source_pc = pc2_points
-        self.numpy_pc  = ros_numpy.point_cloud2.pointcloud2_to_xyz_array(self.source_pc)
-        # print("after:", len(self.numpy_pc))
+            # Calculate min/max along x and y axes
+            x_min, x_max, y_min, y_max = self._calc_avg_line_pts()
 
-        # Calculate min/max along x and y axes
-        x_min, x_max, y_min, y_max = self._calc_avg_line_pts()
+            # Compare distance along x and y axes to choose best line fit
+            delta_x, delta_y = self.calc_dist(x_min, x_max), self.calc_dist(y_min, y_max)
+            if delta_x > delta_y:
+                self.min_pt = x_min
+                self.max_pt = x_max
+            else:
+                self.min_pt = y_min
+                self.max_pt = y_max
 
-        # Compare distance along x and y axes to choose best line fit
-        delta_x, delta_y = self.calc_dist(x_min, x_max), self.calc_dist(y_min, y_max)
-        if delta_x > delta_y:
-            self.min_pt = x_min
-            self.max_pt = x_max
-        else:
-            self.min_pt = y_min
-            self.max_pt = y_max
-
-            # GRAB MIDPOINT HERE AND USE THIS AS POS
+                # GRAB MIDPOINT HERE AND USE THIS AS POS
+        except:
+            return
 
     def remove_outliers_msd(self, points, std_dev_mul):
         """
@@ -560,17 +563,18 @@ def main():
         ### Rear mounted cam transforms
         rear_proc_pc.transform_connector_pose("pose", f"{position_src}_{rear_cam_spec}", [0,0,0], [0, 0, 0, 1])
         rear_proc_pc.transform_connector_grasp(f"line_grasp_{rear_cam_spec}", f"pose_{position_src}_{rear_cam_spec}", [0, 0, 0], [math.pi, 0, math.pi/2, 1])
-        rear_proc_pc.transform_connector_grasp(f"perp_line_grasp_{rear_cam_spec}", f"line_grasp_{rear_cam_spec}", [0, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
-        # create prepose here
-        rear_proc_pc.transform_connector_grasp(f"prepose_grasp_{rear_cam_spec}", f"perp_line_grasp_{rear_cam_spec}", [-0.15, 0, 0], [0, 0, 0, 1])
-        # rear_proc_pc.transform_connector_grasp(f"prepose_grasp_{rear_cam_spec}", f"line_grasp_{rear_cam_spec}", [-0.15, 0, 0], [-math.pi/2, 0, 0, 1])
+        
+        # rear_proc_pc.transform_connector_grasp(f"perp_line_grasp_{rear_cam_spec}", f"match_grasp_{rear_cam_spec}", [0, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
+        # # create prepose here
+        # rear_proc_pc.transform_connector_grasp(f"prepose_grasp_{rear_cam_spec}", f"perp_line_grasp_{rear_cam_spec}", [-0.15, 0, 0], [0, 0, 0, 1])
+        # # rear_proc_pc.transform_connector_grasp(f"prepose_grasp_{rear_cam_spec}", f"line_grasp_{rear_cam_spec}", [-0.15, 0, 0], [-math.pi/2, 0, 0, 1])
 
-        ### Arm mounted cam transforms
-        arm_proc_pc.transform_connector_pose("pose", f"{position_src}_{arm_cam_spec}", [0,0,0], [0, 0, 0, 1])
-        arm_proc_pc.transform_connector_grasp(f"line_grasp_{arm_cam_spec}", f"pose_{position_src}_{arm_cam_spec}", [-0.05, 0, 0], [math.pi/2, math.pi/2, 0, 1])
-        arm_proc_pc.transform_connector_grasp(f"perp_line_grasp_{arm_cam_spec}", f"line_grasp_{arm_cam_spec}", [0, 0, 0], [-math.pi/2, 0, 0, 1])
-        # # # create prepose here
-        arm_proc_pc.transform_connector_grasp(f"prepose_grasp_{arm_cam_spec}", f"line_grasp_{arm_cam_spec}", [-0.15, 0, 0], [-math.pi/2, 0, 0, 1])
+        # ### Arm mounted cam transforms
+        # arm_proc_pc.transform_connector_pose("pose", f"{position_src}_{arm_cam_spec}", [0,0,0], [0, 0, 0, 1])
+        # arm_proc_pc.transform_connector_grasp(f"line_grasp_{arm_cam_spec}", f"pose_{position_src}_{arm_cam_spec}", [-0.05, 0, 0], [math.pi/2, math.pi/2, 0, 1])
+        # arm_proc_pc.transform_connector_grasp(f"perp_line_grasp_{arm_cam_spec}", f"line_grasp_{arm_cam_spec}", [0, 0, 0], [-math.pi/2, 0, 0, 1])
+        # # # # create prepose here
+        # arm_proc_pc.transform_connector_grasp(f"prepose_grasp_{arm_cam_spec}", f"line_grasp_{arm_cam_spec}", [-0.15, 0, 0], [-math.pi/2, 0, 0, 1])
 
 
         ### Test accuracy frame
