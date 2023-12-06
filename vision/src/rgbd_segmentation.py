@@ -8,9 +8,9 @@ import numpy as np
 class RGBDSegmentation(object):
     def __init__(self, cam_spec : str = "mounted_cam"):
         ### Camera Subscribers and Publishers
-        self.aligned_depth_rgb_sub = rospy.Subscriber(f"/{cam_spec}/camera/aligned_depth_to_color/image_raw", Image, self.get_depth_data,queue_size=1)
-        self.rgb_img_sub = rospy.Subscriber(f"/{cam_spec}/camera/color/image_raw", Image, self.rgb_callback, (cam_spec), queue_size=1)
-        self.depth_img_camera_info = rospy.Subscriber(f"/{cam_spec}/camera/aligned_depth_to_color/camera_info",CameraInfo, self.depth_cam_info_callback,queue_size=1)
+        self.aligned_depth_rgb_sub = rospy.Subscriber(f"/{cam_spec}/camera/aligned_depth_to_color/image_raw_throttled", Image, self.get_depth_data,queue_size=1)
+        self.rgb_img_sub = rospy.Subscriber(f"/{cam_spec}/camera/color/image_raw_throttled", Image, self.rgb_callback, (cam_spec), queue_size=1)
+        self.depth_img_camera_info = rospy.Subscriber(f"/{cam_spec}/camera/aligned_depth_to_color/camera_info_throttled",CameraInfo, self.depth_cam_info_callback,queue_size=1)
 
         # Publishers with segmented image info
         self.image_pub = rospy.Publisher(f"/{cam_spec}/rs_segmented_image", Image, queue_size=1)
