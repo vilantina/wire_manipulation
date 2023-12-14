@@ -5,6 +5,7 @@ import numpy as np
 import rospy
 import geometry_msgs.msg
 from std_msgs.msg import Bool
+from std_srvs.srv import SetBool
 
 # from dual_robot_msgs.srv import *
 from time import sleep
@@ -23,6 +24,16 @@ def sleep_arm(robot_):
     req.object_grasp_pose = pose
     response = sleep_arm_input(req)
 
+# Client call to swap depth processing camera selection 
+def set_cam_spec_service(value : Bool):
+     rospy.wait_for_service("/set_cam_spec")
+     try:
+         set_cam_spec = rospy.ServiceProxy('/set_cam_spec', SetBool)
+         response = set_cam_spec(value)
+         return response.success, response.message
+     except rospy.ServiceException as e:
+         print("Service call failed: %s"%e)
+
 #*** Node Starts Here ***#
 if __name__ == "__main__":
     rospy.init_node('listener', anonymous=True)
@@ -39,21 +50,23 @@ if __name__ == "__main__":
     # Bring in front of camera, slip
     joint_goal2 = [36, 13, -41, 153, -90, -53] # slip enroute angled down
     joint_goal3 = [32, -7, -3, -78, 35, 74] # final stowing
-    
-    ### START ROUTINE for full demonstration at annual review
-    ##  Initialize arms; Sleep, open grippers, and ready pose
-    for arm in arm_ids: 
-        status = robot_control.move_to_target(arm, 'sleep')
-        status = robot_control.set_gripper(arm, "open")
 
-    ##  Move grasping arm to wire end and unplug
-    status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal0_5])
-    status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal0])
-    ## Grip and unplug
-    status = robot_control.set_gripper(GRASPING_ARM, "close")
-    status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal1])
-    status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal0])
-    status = robot_control.set_gripper(GRASPING_ARM, "open")
+    success, message = set_cam_spec_service(True) # Swap to arm cam
+    
+    # ### START ROUTINE for full demonstration at annual review
+    # ##  Initialize arms; Sleep, open grippers, and ready pose
+    # for arm in arm_ids: 
+    #     status = robot_control.move_to_target(arm, 'sleep')
+    #     status = robot_control.set_gripper(arm, "open")
+
+    # ##  Move grasping arm to wire end and unplug
+    # status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal0_5])
+    # status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal0])
+    # ## Grip and unplug
+    # status = robot_control.set_gripper(GRASPING_ARM, "close")
+    # status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal1])
+    # status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal0])
+    # status = robot_control.set_gripper(GRASPING_ARM, "open")
                        
     # ### START SCENARIO C4 as soon as wire is grasped, earliest wire could slip
     # print("STATUS: Begin Scenario C4")
