@@ -564,6 +564,11 @@ def main():
         rear_proc_pc.transform_connector_pose("pose", f"{position_src}_{rear_cam_spec}", [0,0,0], [0, 0, 0, 1])
         rear_proc_pc.transform_connector_grasp(f"line_grasp_{rear_cam_spec}", f"pose_{position_src}_{rear_cam_spec}", [0, 0, 0], [math.pi, 0, math.pi/2, 1])
         
+        ### Arm mounted cam transforms
+        arm_proc_pc.transform_connector_pose("pose", f"{position_src}_{arm_cam_spec}", [0,0,0], [0, 0, 0, 1])
+        arm_proc_pc.transform_connector_grasp(f"line_grasp_{arm_cam_spec}", f"pose_{position_src}_{arm_cam_spec}", [0, 0, 0], [math.pi, 0, math.pi/2, 1])
+        
+
         # rear_proc_pc.transform_connector_grasp(f"perp_line_grasp_{rear_cam_spec}", f"match_grasp_{rear_cam_spec}", [0, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
         # # create prepose here
         # rear_proc_pc.transform_connector_grasp(f"prepose_grasp_{rear_cam_spec}", f"perp_line_grasp_{rear_cam_spec}", [-0.15, 0, 0], [0, 0, 0, 1])

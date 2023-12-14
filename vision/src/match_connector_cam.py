@@ -71,17 +71,24 @@ def main():
     rate = rospy.Rate(60)
     rear_cam_spec = "mounted_cam"
     arm_cam_spec = "arm_cam"
-    # CAM_SPEC = "mounted"
-    # cam_spec_name = "d415_color_frame" if 
+
+    rear_cam_name = "d415"
+    arm_cam_name = "d435i"
 
     while not rospy.is_shutdown():
-        transform_connector_match_cam(f"match_grasp_{rear_cam_spec}", f"line_grasp_{rear_cam_spec}", "d415_color_frame", [0,0,0], [0, 0, 0, 1])
+        ### Rear mounted cam to match rear camera transformers
+        transform_connector_match_cam(f"match_grasp_{rear_cam_spec}", f"line_grasp_{rear_cam_spec}", f"{rear_cam_name}_color_frame", [0,0,0], [0, 0, 0, 1])
         # perp: [0, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
         transform_connector_grasp(f"perp_line_grasp_{rear_cam_spec}", f"match_grasp_{rear_cam_spec}", [0.03, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
-
         # Publish prepose here
         transform_connector_grasp(f"prepose_grasp_{rear_cam_spec}", f"perp_line_grasp_{rear_cam_spec}", [-0.15, 0, 0], [0, 0, 0, 1])
 
+        ### Arm mounted cam to match arm camera transformers
+        transform_connector_match_cam(f"match_grasp_{rear_cam_spec}", f"line_grasp_{rear_cam_spec}", f"{arm_cam_name}_color_frame", [0,0,0], [0, 0, 0, 1])
+        # perp: [0, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
+        transform_connector_grasp(f"perp_line_grasp_{rear_cam_spec}", f"match_grasp_{rear_cam_spec}", [0.03, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
+        # Publish prepose here
+        transform_connector_grasp(f"prepose_grasp_{rear_cam_spec}", f"perp_line_grasp_{rear_cam_spec}", [-0.15, 0, 0], [0, 0, 0, 1])
 
 if __name__ == '__main__':
     main()

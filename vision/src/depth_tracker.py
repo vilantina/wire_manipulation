@@ -128,8 +128,11 @@ class DepthCloudTracker:
 
         br.sendTransform(t)
 
-CAM_SPEC = "mounted_cam"
+CAM_SPEC = "arm_cam"#"mounted_cam"
 def set_cam_spec_srv(request):
+    """
+    Switches cam used, take out now with limiting?
+    """
     global CAM_SPEC
     # True = arm_cam, False = rear mounted_cam
     CAM_SPEC = "arm_cam" if request.data else "mounted_cam"
