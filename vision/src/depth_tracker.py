@@ -149,7 +149,7 @@ def main():
     rear_tracker = DepthCloudTracker("mounted_cam", 10)
     arm_tracker = DepthCloudTracker("arm_cam", 10)
     while not rospy.is_shutdown():
-        print(CAM_SPEC)
+        # print(CAM_SPEC)
         # z, x, y
         if CAM_SPEC == "arm_cam":
             arm_tracker.transform_end([-0.05, 0, 0], [0, 0, 0, 1])

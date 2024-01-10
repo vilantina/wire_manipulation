@@ -766,17 +766,29 @@ Visualization Manager:
           Value: false
         d435i_link:
           Value: false
+        depth_arm_cam:
+          Value: true
         depth_mounted_cam:
           Value: false
         ground:
           Value: false
+        line_grasp_arm_cam:
+          Value: true
         line_grasp_mounted_cam:
           Value: true
+        match_grasp_mounted_cam:
+          Value: false
         panel_1:
           Value: false
         panel_2:
           Value: false
+        perp_line_grasp_mounted_cam:
+          Value: false
+        pose_depth_arm_cam:
+          Value: false
         pose_depth_mounted_cam:
+          Value: false
+        prepose_grasp_mounted_cam:
           Value: false
         world:
           Value: false
@@ -787,6 +799,10 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
+        depth_arm_cam:
+          pose_depth_arm_cam:
+            line_grasp_arm_cam:
+              {}
         world:
           a_bot_base_link:
             a_bot_shoulder_link:
@@ -859,7 +875,10 @@ Visualization Manager:
                 depth_mounted_cam:
                   pose_depth_mounted_cam:
                     line_grasp_mounted_cam:
-                      {}
+                      match_grasp_mounted_cam:
+                        perp_line_grasp_mounted_cam:
+                          prepose_grasp_mounted_cam:
+                            {}
               d415_depth_frame:
                 d415_depth_optical_frame:
                   {}

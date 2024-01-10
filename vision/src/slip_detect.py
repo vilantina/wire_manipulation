@@ -27,7 +27,7 @@ class SlipDetect:
         # Publisher for delta surpassed
         self.marker_delta_flag_pub = rospy.Publisher("/{}_marker_delta_flag".format(self.tracking_arm), Bool, queue_size=1)
 
-    def monitor_dist(self, connector_name: str, rate_input: float, slip_delta: float):
+    def monitor_dist(self, connector_name: str, rate_input: float, slip_delta: float, log : bool = True):
         """
         Parameters:
             rate_input (float): hertz for rate to check Euclidean distance between marker and executing arm
@@ -47,9 +47,10 @@ class SlipDetect:
 
                 marker_delta_flag = euclidean_dist > slip_delta
 
-                print("\n*********************\n**** WIRE STATUS ****")
-                print("Distance Limit: {}\nLive distance: {}".format(slip_delta, euclidean_dist))
-                print("DISTANCE SURPASSED" if euclidean_dist > slip_delta else "WITHIN THRESHOLD")
+                if (log):
+                    print("\n*********************\n**** WIRE STATUS ****")
+                    print("Distance Limit: {}\nLive distance: {}".format(slip_delta, euclidean_dist))
+                    print("DISTANCE SURPASSED" if euclidean_dist > slip_delta else "WITHIN THRESHOLD")
             
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
                 print(e)
@@ -74,8 +75,8 @@ def main():
 
     
     slip_detector = SlipDetect()
-    slip_detector.monitor_dist("line_grasp_mounted_cam", 0.4, .25) # 0.4hz ~ 2.5 seconds, .20 meter slip delta
-    # slip_detector.monitor_dist("match_grasp_mounted_cam", 0.4, .25) # 0.4hz ~ 2.5 seconds, .20 meter slip delta
+    slip_detector.monitor_dist("line_grasp_mounted_cam", 0.4, .25, False) # 0.4hz ~ 2.5 seconds, .20 meter slip delta
+    # slip_detector.monitor_dist("match_grasp_mounted_cam", 0.4, .25, False) # 0.4hz ~ 2.5 seconds, .20 meter slip delta
 
 
     rospy.spin()
