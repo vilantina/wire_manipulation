@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rospy
 
-from std_msgs.msg import Header
+from std_msgs.msg import Header, Time
 import sensor_msgs.point_cloud2 as pc2
 from sensor_msgs.msg import PointCloud2, PointField
 from visualization_msgs.msg import Marker
@@ -33,6 +33,8 @@ class ConnectorPC():
         # Publisher of fitted shape to pointcloud
         self.shape_pub = rospy.Publisher(f'/{cam_spec}/pc_shape', Marker, queue_size=100)
         self.line_pub = rospy.Publisher(f'/{cam_spec}/pc_line', Marker, queue_size=10)
+        self.rear_timestamp_pub = rospy.Publisher('/rear_timestamp', Time, queue_size=10)
+        self.arm_timestamp_pub = rospy.Publisher('/arm_timestamp', Time, queue_size=10)
 
         # # Fitted shape params
         # self.shape_params = None
@@ -48,6 +50,9 @@ class ConnectorPC():
         # Store best fit lines
         self.lsr_line = None
         self.ransac_line = None
+
+        # Store last transform of connector pose
+        self.last_pose = None
 
     ### Callbacks
     def pc_callback(self, points):
@@ -446,7 +451,16 @@ class ConnectorPC():
         br = tf2_ros.TransformBroadcaster()
         t = TransformStamped()
 
-        t.header.stamp = rospy.Time.now()
+        curr_time = rospy.Time.now()
+        t.header.stamp = curr_time
+        try:
+            if child_name == "line_grasp_mounted_cam":
+                self.rear_timestamp_pub.publish(curr_time)
+            elif child_name == "line_grasp_arm_cam":
+                self.arm_timestamp_pub.publish(curr_time)
+        except Exception as e:
+            print(e)
+
         t.header.frame_id = source
         t.child_frame_id = "{}".format(child_name)
 
@@ -461,6 +475,14 @@ class ConnectorPC():
         t.transform.rotation.z = q[2]
         t.transform.rotation.w = q[3]
 
+        # curr_pose = t.transform
+        # print(self.last_pose)
+        # print(curr_pose)
+        # if self.last_pose == None or self.last_pose != curr_pose:
+        #     self.last_pose = curr_pose
+            # print(1)
+        # else:
+            # print(2)
         br.sendTransform(t)
 
     def transform_coefficient_pose(self, child_name: str, source: str, pos_adj, ori_adj) -> None:

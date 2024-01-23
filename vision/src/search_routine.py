@@ -144,7 +144,7 @@ class SearchRoutine():
                     y_pos = POS_SAVE['y'] + (NODE_POS_OFFSETS[node_variation_counter][2]*dy/2)
 
                     pos, ori = self.transform_search_target("search_target", "camera_link", NODE_ORI_OFFSETS[node_variation_counter+1], [z_pos, x_pos, y_pos])
-                    if self.check_frame_found("d435i_color_frame", 'usb-line_grasp_arm_cam', pos, ori):
+                    if self.check_frame_found("d435i_color_frame", 'line_grasp_arm_cam', pos, ori):
                         SEARCHING = False # end search when aruco found
                         TAG_FOUND = True
                         break
