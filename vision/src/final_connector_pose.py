@@ -34,12 +34,18 @@ def main():
     rospy.sleep(3)
     rate = rospy.Rate(60)
     rear_cam_spec = "mounted_cam"
+    arm_cam_spec = "arm_cam"
 
     while not rospy.is_shutdown():
         ### Rear mounted cam transforms
         transform_connector_grasp(f"final_pose_{rear_cam_spec}", f"connector_d415_color_frame", [0, 0, 0], [-math.pi/2, 0, 0, 1])
         # # create prepose here
         transform_connector_grasp(f"final_prepose_{rear_cam_spec}", f"connector_d415_color_frame", [-0.15, 0, 0], [-math.pi/2, 0, 0, 1])
+        
+        # ### Arm mounted cam transforms
+        # transform_connector_grasp(f"final_pose_{arm_cam_spec}", f"connector_d415_color_frame", [0, 0, 0], [-math.pi/2, 0, 0, 1])
+        # # # create prepose here
+        # transform_connector_grasp(f"final_prepose_{arm_cam_spec}", f"connector_d415_color_frame", [-0.15, 0, 0], [-math.pi/2, 0, 0, 1])
 
 if __name__ == '__main__':
     main()

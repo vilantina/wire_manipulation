@@ -83,12 +83,27 @@ def main():
         # Publish prepose here
         transform_connector_grasp(f"prepose_grasp_{rear_cam_spec}", f"perp_line_grasp_{rear_cam_spec}", [-0.15, 0, 0], [0, 0, 0, 1])
 
+        # 1st subnode save
         ### Arm mounted cam to match arm camera transformers
-        transform_connector_match_cam(f"match_grasp_{rear_cam_spec}", f"line_grasp_{rear_cam_spec}", f"{arm_cam_name}_color_frame", [0,0,0], [0, 0, 0, 1])
+        transform_connector_match_cam(f"match_grasp_{arm_cam_spec}", f"line_grasp_{arm_cam_spec}", f"{arm_cam_name}_color_frame", [0,0,0], [0, 0, 0, 1])
         # perp: [0, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
-        transform_connector_grasp(f"perp_line_grasp_{rear_cam_spec}", f"match_grasp_{rear_cam_spec}", [0.03, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
-        # Publish prepose here
-        transform_connector_grasp(f"prepose_grasp_{rear_cam_spec}", f"perp_line_grasp_{rear_cam_spec}", [-0.15, 0, 0], [0, 0, 0, 1])
+        transform_connector_grasp(f"perp_line_grasp_{arm_cam_spec}", f"match_grasp_{arm_cam_spec}", [-0.05, -0.0, 0.1], [math.pi/6, math.pi/9, -math.pi/6, 1])
+        # Publish prepose here                                                                    # +forward/-backward, +left/-right, +up/-down
+        transform_connector_grasp(f"prepose_grasp_{arm_cam_spec}", f"perp_line_grasp_{arm_cam_spec}", [-0., 0, 0], [0, 0, 0, 1])
+
+        # # 2nd subnode save
+        # ### Arm mounted cam to match arm camera transformers
+        # transform_connector_match_cam(f"match_grasp_{arm_cam_spec}", f"line_grasp_{arm_cam_spec}", f"{arm_cam_name}_color_frame", [0,0,0], [0, 0, 0, 1])
+        # # perp: [0, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
+        # transform_connector_grasp(f"perp_line_grasp_{arm_cam_spec}", f"match_grasp_{arm_cam_spec}", [-0.1, -0.1, -0.1], [0,0,0, 1])
+        # # Publish prepose here                                                                      # +forward/-backward, +left/-right, +up/-down
+        # transform_connector_grasp(f"prepose_grasp_{arm_cam_spec}", f"perp_line_grasp_{arm_cam_spec}", [-0., 0, 0], [0, 0, 0, 1])
+
+
+        # # perp: [0, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
+        # transform_connector_grasp(f"perp_line_grasp_{arm_cam_spec}", f"match_grasp_{arm_cam_spec}", [0.03, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
+        # # Publish prepose here
+        # transform_connector_grasp(f"prepose_grasp_{arm_cam_spec}", f"perp_line_grasp_{arm_cam_spec}", [-0.15, 0, 0], [0, 0, 0, 1])
 
 if __name__ == '__main__':
     main()

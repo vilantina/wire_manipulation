@@ -99,13 +99,16 @@ class SearchRoutine():
         ### Variables for spiral positioning
         # Define max and min for horizontal and vertical coordinates
         # +distance to panels, horizontal 0.325:-0.4, vertical -0.4:0.2
-        MIN_X, MAX_X = -0.2, 0.3
-        MIN_Y, MAX_Y = 0.1, 0.5
-        dx, dy = 0.1, 0.1
+        MIN_X, MAX_X = -0.2, 0.3 # .05: -> 0.1
+        MIN_Y, MAX_Y = 0.1, 0.5 # 0.15 -> 0.2
+        dx, dy = 0.25, 0.25 # distance between middle and subnodes
 
         # initalize search target at given position; updated through search routine
         # z_pos, x_pos, y_pos, = 0.2, 0.0, 0.3 # middle of workspace
-        z_pos, x_pos, y_pos, = 0.1, 0.05, 0.15 # example of where loose cable might be
+        # upper position
+        z_pos, x_pos, y_pos, = 0.2, 0.1, 0.2 # example of where loose cable might be
+        # lower position 
+        # z_pos, x_pos, y_pos, = 0.1, 0.05, 0.15
 
 
         x_dir, y_dir = -1, 1 # direction to start the search
@@ -144,9 +147,24 @@ class SearchRoutine():
                     y_pos = POS_SAVE['y'] + (NODE_POS_OFFSETS[node_variation_counter][2]*dy/2)
 
                     pos, ori = self.transform_search_target("search_target", "camera_link", NODE_ORI_OFFSETS[node_variation_counter+1], [z_pos, x_pos, y_pos])
+                    
+                    # ### TESTING
+                    # # sleep(2.5)
+                    # if self.check_frame_found("d435i_color_frame", 'line_grasp_arm_cam', pos, ori) and node_variation_counter == 1:
+                    #     SEARCHING = False # end search when aruco found
+                    #     TAG_FOUND = True
+                    #     print(f"TAG FOUND: {TAG_FOUND}")
+                    #     break
+                    # else:
+                    #     node_variation_counter += 1
+
+
+                    ### FULL
+                    sleep(2.5)
                     if self.check_frame_found("d435i_color_frame", 'line_grasp_arm_cam', pos, ori):
                         SEARCHING = False # end search when aruco found
                         TAG_FOUND = True
+                        print(f"TAG FOUND: {TAG_FOUND}, {node_variation_counter}")
                         break
                     else:
                         node_variation_counter += 1

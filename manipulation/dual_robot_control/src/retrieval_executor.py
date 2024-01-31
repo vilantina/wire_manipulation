@@ -57,7 +57,7 @@ def check_frame_exists(listener, source : str = "world", target : str = "line_gr
     """
     Check if a given frame exists
     """
-    return listener.waitForTransform(source, target, rospy.Time(), rospy.Duration(1.0))
+    return listener.waitForTransform(source, target, rospy.Time(), rospy.Duration(1.0)) == None
 
 def check_active_range(cam_time, interval : float = 5.0):
     # Active if difference between current time and camera time is less than the interval
@@ -153,7 +153,9 @@ if __name__ == "__main__":
                 # 3. Check that the connector frame has been active over a given duration
                 conn_update_active = check_connector_noise(listener, "world", "line_grasp_mounted_cam", active_duration) # false means swap to arm
                 # Verify active checks, and throw an exception to begin arm search if non-active
-                active_flag = conn_frame_exists and conn_time_active
+                # sleep(3)
+                active_flag = conn_frame_exists and conn_time_active and conn_update_active
+                print(f"ACTIVE FLAG: {active_flag}")
                 if active_flag == False:
                     raise(tf.LookupException) # uncomment for initing search
                 else:
@@ -188,8 +190,11 @@ if __name__ == "__main__":
                 if arm_search:
                     print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Arm cam search successful, send grasping arm for retrieval")
 
-                    status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_arm_cam")
+                    # status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_arm_cam")
+                    # status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_arm_cam")
+                    sleep(5)
                     status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_arm_cam")
+                    
                     # Search done, return view to rear cam
                     success, message = set_cam_spec_service(False) # Swap back to rear cam
 

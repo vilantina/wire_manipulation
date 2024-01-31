@@ -12,7 +12,7 @@ Panels:
         - /DepthCloud2
         - /DepthCloud2/Auto Size1
       Splitter Ratio: 0.5
-    Tree Height: 244
+    Tree Height: 250
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -767,14 +767,16 @@ Visualization Manager:
         d435i_link:
           Value: false
         depth_arm_cam:
-          Value: true
+          Value: false
         depth_mounted_cam:
           Value: false
         ground:
           Value: false
         line_grasp_arm_cam:
-          Value: true
+          Value: false
         line_grasp_mounted_cam:
+          Value: false
+        match_grasp_arm_cam:
           Value: true
         match_grasp_mounted_cam:
           Value: false
@@ -782,11 +784,15 @@ Visualization Manager:
           Value: false
         panel_2:
           Value: false
+        perp_line_grasp_arm_cam:
+          Value: true
         perp_line_grasp_mounted_cam:
           Value: false
         pose_depth_arm_cam:
           Value: false
         pose_depth_mounted_cam:
+          Value: false
+        prepose_grasp_arm_cam:
           Value: false
         prepose_grasp_mounted_cam:
           Value: false
@@ -799,10 +805,6 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        depth_arm_cam:
-          pose_depth_arm_cam:
-            line_grasp_arm_cam:
-              {}
         world:
           a_bot_base_link:
             a_bot_shoulder_link:
@@ -844,6 +846,13 @@ Visualization Manager:
                               d435i_color_frame:
                                 d435i_color_optical_frame:
                                   {}
+                                depth_arm_cam:
+                                  pose_depth_arm_cam:
+                                    line_grasp_arm_cam:
+                                      match_grasp_arm_cam:
+                                        perp_line_grasp_arm_cam:
+                                          prepose_grasp_arm_cam:
+                                            {}
                               d435i_depth_frame:
                                 d435i_depth_optical_frame:
                                   {}
@@ -931,6 +940,178 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
+    - Class: rviz/Camera
+      Enabled: false
+      Image Rendering: background and overlay
+      Image Topic: /arm_cam/camera/aligned_depth_to_color/image_raw
+      Name: Camera
+      Overlay Alpha: 0.5
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+      Visibility:
+        Camera: true
+        DepthCloud: true
+        Grid: true
+        Image: true
+        MotionPlanning: true
+        TF: true
+        Value: true
+      Zoom Factor: 1
+    - Class: rviz/Camera
+      Enabled: false
+      Image Rendering: background and overlay
+      Image Topic: /arm_cam/rs_segmented_image
+      Name: Camera
+      Overlay Alpha: 0.5
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+      Visibility:
+        Camera: true
+        DepthCloud: true
+        Grid: true
+        Image: true
+        MotionPlanning: true
+        TF: true
+        Value: true
+      Zoom Factor: 1
+    - Class: rviz/Image
+      Enabled: false
+      Image Topic: /arm_cam/camera/aligned_depth_to_color/image_raw
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+    - Class: rviz/Camera
+      Enabled: false
+      Image Rendering: background and overlay
+      Image Topic: /arm_cam/camera/color/image_raw
+      Name: Camera
+      Overlay Alpha: 0.5
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+      Visibility:
+        Camera: true
+        DepthCloud: true
+        Grid: true
+        Image: true
+        MotionPlanning: true
+        TF: true
+        Value: true
+      Zoom Factor: 1
+    - Class: rviz/Image
+      Enabled: false
+      Image Topic: /arm_cam/camera/aligned_depth_to_color/image_raw
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+    - Class: rviz/Camera
+      Enabled: false
+      Image Rendering: background and overlay
+      Image Topic: /arm_cam/camera/color/image_raw
+      Name: Camera
+      Overlay Alpha: 0.5
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+      Visibility:
+        Camera: true
+        DepthCloud: true
+        Grid: true
+        Image: true
+        MotionPlanning: true
+        TF: true
+        Value: true
+      Zoom Factor: 1
+    - Class: rviz/Image
+      Enabled: false
+      Image Topic: /arm_cam/camera/color/image_raw
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+    - Class: rviz/Image
+      Enabled: false
+      Image Topic: /mounted_cam/camera/color/image_raw
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+    - Class: rviz/Image
+      Enabled: false
+      Image Topic: /arm_cam/camera/color/image_raw
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+    - Class: rviz/Image
+      Enabled: false
+      Image Topic: /arm_cam/camera/color/image_raw
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+    - Class: rviz/Image
+      Enabled: false
+      Image Topic: /arm_cam/camera/color/image_raw
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
+    - Class: rviz/Image
+      Enabled: false
+      Image Topic: /mounted_cam/camera/color/image_raw
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -947,7 +1128,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.949281930923462
+      Distance: 1.9640165567398071
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -955,19 +1136,21 @@ Visualization Manager:
         Value: false
       Field of View: 0.75
       Focal Point:
-        X: 0.32772552967071533
-        Y: -0.1148465946316719
-        Z: 0.023274561390280724
+        X: 0.3686586022377014
+        Y: -0.10906034708023071
+        Z: 0.0770479068160057
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5800005197525024
+      Pitch: 0.6147971153259277
       Target Frame: world
-      Yaw: 2.616771697998047
+      Yaw: 2.616762399673462
     Saved: ~
 Window Geometry:
+  Camera:
+    collapsed: false
   Displays:
     collapsed: false
   Height: 1016
@@ -975,11 +1158,13 @@ Window Geometry:
     collapsed: false
   Hide Left Dock: false
   Hide Right Dock: false
+  Image:
+    collapsed: false
   MotionPlanning:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000001f30000039efc0200000007fb000000100044006900730070006c006100790073010000003d00000131000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000174000002670000017d00ffffff0000030f0000039e00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000100000000000001f30000039efc0200000013fb000000100044006900730070006c006100790073010000003d00000137000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000001600fffffffb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e0067010000017a000002610000017d00fffffffb0000000c00430061006d0065007200610000000310000000cb0000001600fffffffb0000000c00430061006d0065007200610000000310000000cb0000001600fffffffb0000000a0049006d0061006700650000000310000000cb0000001600fffffffb0000000c00430061006d0065007200610000000310000000cb0000001600fffffffb0000000a0049006d0061006700650000000310000000cb0000001600fffffffb0000000c00430061006d0065007200610000000310000000cb0000000000000000fb0000000a0049006d006100670065000000028f000000950000001600fffffffb0000000a0049006d006100670065000000029a0000007f0000001600fffffffb0000000a0049006d006100670065000000032d000000ae0000001600fffffffb0000000a0049006d00610067006500000002ff000000dc0000001600fffffffb0000000a0049006d006100670065000000029a000000890000001600fffffffb0000000a0049006d0061006700650000000308000000d30000001600ffffff0000030f0000039e00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
   Width: 1288

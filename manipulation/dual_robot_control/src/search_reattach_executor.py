@@ -63,16 +63,19 @@ if __name__ == "__main__":
     SEARCHING_ARM_ID = "a_bot_arm" if SEARCHING_ARM == "right" else "b_bot_arm"
     arm_ids = ["left","right"]
    
-    # If rear camera fails, switch to search pattern
-    success, message = set_cam_spec_service(True) # Swap to arm cam
-    ## Initiate Spiral searching
-    print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Rear camera view attempt failed, initiate search routine")
-    # Initiate search algorithm
-    print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Initiate search routine with arm cam")
+    # # If rear camera fails, switch to search pattern
+    # success, message = set_cam_spec_service(True) # Swap to arm cam
+    # ## Initiate Spiral searching
+    # print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Rear camera view attempt failed, initiate search routine")
+    # # Initiate search algorithm
+    # print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Initiate search routine with arm cam")
 
-    success, message = set_cam_spec_service(True) # Swap to arm cam
-    sleep(2.5)
+    # success, message = set_cam_spec_service(True) # Swap to arm cam
+    # sleep(2.5)
 
-    # Begin search
-    searchRoutine = SC.SearchRoutine("left", "right")
-    search_result = searchRoutine.search(check_subnodes=True)
+    # # Begin search
+    # searchRoutine = SC.SearchRoutine("left", "right")
+    # search_result = searchRoutine.search(check_subnodes=True)
+
+    # status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_arm_cam")
+    status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_arm_cam")
