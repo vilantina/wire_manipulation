@@ -160,11 +160,12 @@ class SearchRoutine():
 
 
                     ### FULL
-                    sleep(2.5)
-                    if self.check_frame_found("d435i_color_frame", 'line_grasp_arm_cam', pos, ori):
+                    sleep(5)
+                    print(f"TAG FOUND: {TAG_FOUND}, {node_variation_counter}")
+                    if self.check_frame_found("d435i_color_frame", 'line_grasp_arm_cam', pos, ori) or node_variation_counter == 1:
+                        # or node counter = 2nd pos?
                         SEARCHING = False # end search when aruco found
                         TAG_FOUND = True
-                        print(f"TAG FOUND: {TAG_FOUND}, {node_variation_counter}")
                         break
                     else:
                         node_variation_counter += 1

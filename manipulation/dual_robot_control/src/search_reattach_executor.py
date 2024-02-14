@@ -77,5 +77,22 @@ if __name__ == "__main__":
     # searchRoutine = SC.SearchRoutine("left", "right")
     # search_result = searchRoutine.search(check_subnodes=True)
 
-    # status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_arm_cam")
-    status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_arm_cam")
+    # sleep(10)
+
+    # status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_arm_cam_1")
+    # status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_arm_cam_1")
+
+    joint_goal_0 = [54, -11, -8, 105, -56, -22]
+    joint_goal_1 = [39, 6, -27, 116, -43, -31]
+    joing_goal_unplug = [22, -6, -12, 129, -29, -40]
+    joint_goal_drop = [37, 19, -61, 154, -87, -62]
+
+    status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal_0])
+    status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal_1])
+    status = robot_control.set_gripper(GRASPING_ARM, "close")
+
+    status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joing_goal_unplug])
+    status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal_1])
+    status = robot_control.set_gripper(GRASPING_ARM, "open")
+
+    status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal_drop])

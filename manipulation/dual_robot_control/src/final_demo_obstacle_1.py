@@ -156,7 +156,7 @@ if __name__ == "__main__":
                 # sleep(3)
                 active_flag = conn_frame_exists and conn_time_active and conn_update_active
                 print(f"ACTIVE FLAG: {active_flag}")
-                if active_flag == False:
+                if active_flag == False or active_flag == True: # testing, delete this later
                     raise(tf.LookupException) # uncomment for initing search
                 else:
                     rear_search = True
