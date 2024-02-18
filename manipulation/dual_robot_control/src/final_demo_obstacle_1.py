@@ -29,21 +29,8 @@ def calc_active_callback(ts):
     CURR_REAR_TIMESTAMP = ts
 
 REAR_TIMESTAMP_SUB = rospy.Subscriber("/rear_timestamp", Time, calc_active_callback, queue_size=1)
-
-# Client call to sleep specified arm
-def sleep_arm(robot_):
-    rospy.wait_for_service('sleep_arm_service')
     
-    sleep_arm_input = rospy.ServiceProxy('/sleep_arm_service', GraspObject)
-    req = GraspObjectRequest()
-    pose = geometry_msgs.msg.Pose()
-    pose.position = geometry_msgs.msg.Point(0,0,0)
-    pose.orientation = geometry_msgs.msg.Quaternion(0,0,0,0)
-    req.robot = 'left'
-    req.object_grasp_pose = pose
-    response = sleep_arm_input(req)
-    
-# Client call to swap ML camera specification 
+# Client call to swap camera specification 
 def set_cam_spec_service(value : Bool):
      rospy.wait_for_service("/set_cam_spec")
      try:

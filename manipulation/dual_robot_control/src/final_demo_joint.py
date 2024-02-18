@@ -10,11 +10,19 @@ from time import sleep
 from std_msgs.msg import Bool, Time
 from colorama import Fore
 from std_srvs.srv import SetBool
+from sensor_msgs.msg import PointCloud2
 
 # from dual_robot_msgs.srv import *
 from time import sleep
 from robot_services import RobotControl
 
+# Diego's custom libs
+from wire_modeling.wire_sim import Collisions,TargetObject,WireModel,WireSim
+from wire_modeling_msgs.srv import *
+# from dual_robot_msgs.srv import *
+from wire_modeling.wire_grasp_toolbox import WireGraspToolbox, rotm
+
+### Initiating robot arm controls
 # Temp solution - Fix this import to something like `from dual_robot_control.robot_services import RobotControl`
 import importlib.util
 import sys
@@ -29,21 +37,35 @@ def calc_active_callback(ts):
     CURR_REAR_TIMESTAMP = ts
 
 REAR_TIMESTAMP_SUB = rospy.Subscriber("/rear_timestamp", Time, calc_active_callback, queue_size=1)
+    
+### Diego's functions for brushing wire
+# returns a pointcloud instance
+def get_wire_pointcloud(topic):
+    points = rospy.wait_for_message(topic, PointCloud2)
+    return points
 
-# Client call to sleep specified arm
-def sleep_arm(robot_):
-    rospy.wait_for_service('sleep_arm_service')
-    
-    sleep_arm_input = rospy.ServiceProxy('/sleep_arm_service', GraspObject)
-    req = GraspObjectRequest()
-    pose = geometry_msgs.msg.Pose()
-    pose.position = geometry_msgs.msg.Point(0,0,0)
-    pose.orientation = geometry_msgs.msg.Quaternion(0,0,0,0)
-    req.robot = 'left'
-    req.object_grasp_pose = pose
-    response = sleep_arm_input(req)
-    
-# Client call to swap ML camera specification 
+# Client to call to get wire model 
+def process_point_cloud_client(points):
+     rospy.wait_for_service('process_point_cloud')
+     try:
+         wire_nodes = rospy.ServiceProxy('process_point_cloud', ProcessPointCloud)
+         response = wire_nodes(points)
+         return response
+     except rospy.ServiceException as e:
+         print("Service call failed: %s"%e)
+
+# Client call to grasp and move wire 
+def grasp_wire(robot_,wire_grasp_pose,pull_vec):
+     rospy.wait_for_service('grasp_wire_service')
+     try:
+         grasp_wire_input = rospy.ServiceProxy('grasp_wire_service', GraspWire)
+         response = grasp_wire_input(robot_,wire_grasp_pose,pull_vec)
+         return response
+     except rospy.ServiceException as e:
+         print("Service call failed: %s"%e)
+
+### Slip detect functions
+# Client call to swap camera specification 
 def set_cam_spec_service(value : Bool):
      rospy.wait_for_service("/set_cam_spec")
      try:
@@ -71,10 +93,11 @@ def check_connector_noise(listener, parent : str = "world", child : str = "line_
             return False # Connector frame was not updated over the duration of n iterations, meaning rear cam has lost sight
     return True # Connector frame updated over the duration of n interations, meaning rear cam has sight
 
-#*** Node Starts Here ***#
+#*** Demo Node Starts Here ***#
 if __name__ == "__main__":
     ### OVERALL SEARCH DEMO
-    # Search algorithm is demonstrated with the following steps:
+    # Search algorithm and clearing obstructing wire obstacles
+    # using wire segmentation is demonstrated with the following steps:
     # 0. Initiate unplugging of the connector from mock battery ORU
     # 1. Purposefully induce an engineered slip to require anomaly detection and correction
     # 2. Detect slip using Euclidean distance between the connector and grasping arm's end effector
@@ -82,12 +105,14 @@ if __name__ == "__main__":
     #    3a. Move searching arm to first search target
     #    3b. Conduct search on search target
     #    3c. If nothing found, move search target and arm and loop
+    # 4. Connector falls behind an obstructing 
     # 4. If connector found, transform frame of connector from searching arm to grasping arm and initiate retrieval
     #    Else, begin search elsewhere in environment
     # 5. Return retrieved connector end to originally intending stowing point 
 
     rospy.init_node('listener', anonymous=True)
     robot_control = RobotControl()
+    topic = "/rscamera/depth/points"
 
     GRASPING_ARM    = "right"
     GRASPING_ARM_ID = "a_bot_arm" if GRASPING_ARM == "right" else "b_bot_arm"
@@ -106,8 +131,65 @@ if __name__ == "__main__":
     listener = tf.TransformListener()
     active_duration = 5
 
-    ### START ROUTINE for full demonstration at annual review
+    # Get segmented pointcloud data
+    print("STATUS: Getting PointCloud Instance")
+    points = get_wire_pointcloud(topic)
 
+    # Process PC data to get estimated nodes on wire
+    print("STATUS: Processing Pc with process_point_cloud_server")
+    wire_nodes = process_point_cloud_client(points) # output data structure is a posearray
+
+    # Convert PoseArray into Numpy Array
+    wire = np.zeros((3,20))
+    raw_data = np.zeros((len(wire_nodes.raw_points.poses),3))
+
+    for i in range(20):
+        wire[[0],[i]] = wire_nodes.pose.poses[i].position.x
+        wire[[1],[i]] = wire_nodes.pose.poses[i].position.y
+        wire[[2],[i]] = wire_nodes.pose.poses[i].position.z
+
+
+    for i in range(len(wire_nodes.raw_points.poses)):
+        raw_data[[i],[0]] = wire_nodes.raw_points.poses[i].position.x
+        raw_data[[i],[1]] = wire_nodes.raw_points.poses[i].position.y
+        raw_data[[i],[2]] = wire_nodes.raw_points.poses[i].position.z
+
+
+    # ***** insert wire info here *****
+    L = wire_nodes.wire_length # get length from point cloud process
+    M = 0.028
+    Ks = 13.1579
+    Kb = 6.13
+    Kd = 5.26
+    #Ks = 237.5
+    #Kb = 25
+    #Kd = 125
+    wire_model = WireModel(L,M,Ks,Kb,Kd,wire_nodes.wire_class) # create Wire object
+
+    #*** Get bezier curve ***#
+    curve = WireGraspToolbox(raw_data)
+
+    #*** Collision Object ***#
+    collisions = Collisions()
+    collisions.make_box_env_collision_obj(0.05,0.76,0.6,np.array([0.53,0,0.3])) # Front panel
+    collisions.make_box_env_collision_obj(0.457,0.05,0.6,np.array([0.3,-0.382,0.3])) # Side Panel
+    collisions.make_box_env_collision_obj(0.05,0.05,0.05,np.array([0.48,0.03,0.27])) # Target Object
+
+    #*** Initialize the WireSim Object ***
+    N = 20
+    wire_sim_ = WireSim(N,wire_model,target_object, curve, collisions )
+
+    print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Sending Wire Config to Simulator ")
+    pick, pull , wire_grasping_robot = wire_sim_.simulate(wire)
+
+    print(Fore.BLUE + "UPDATE:= " + Fore.WHITE + "Robot Actions Returned from Simulator ")
+    print("     Pick Point ", pick.flatten())
+    print("     Pull Vector ", pull.flatten())
+    print("")
+
+
+
+    ### START ROUTINE for full demonstration at annual review
     ##  Initialize arms; Sleep, open grippers, and ready pose
     print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Initiating Robots")
     for arm in arm_ids: 
@@ -139,67 +221,51 @@ if __name__ == "__main__":
             sleep(10) # wait 5-10 real time seconds for slipped wire to settle
             status = robot_control.move_to_target(GRASPING_ARM, 'sleep')
             status = robot_control.set_gripper(GRASPING_ARM, "open")
-
-            rear_search = False
-            arm_search = False
-            # First use rear camera to detect existence and location of connector
-            try:
-                ## Checks that rear mounted camera has sight of the connector (from rear mounted cam perspective)
-                # 1. Check that the connector frame exists 
-                conn_frame_exists = check_frame_exists(listener, "world", "line_grasp_mounted_cam") # returns none if exists
-                # 2. Check that the timestamp of the last active frame is within duration of current time
-                curr = rospy.Time.now()
-                conn_time_active = check_active_range(CURR_REAR_TIMESTAMP, active_duration)
-                # 3. Check that the connector frame has been active over a given duration
-                conn_update_active = check_connector_noise(listener, "world", "line_grasp_mounted_cam", active_duration) # false means swap to arm
-                # Verify active checks, and throw an exception to begin arm search if non-active
-                # sleep(3)
-                active_flag = conn_frame_exists and conn_time_active and conn_update_active
-                print(f"ACTIVE FLAG: {active_flag}")
-                if active_flag == False or active_flag == True: # testing, delete this later
-                    raise(tf.LookupException) # uncomment for initing search
-                else:
-                    rear_search = True
             
-                # # If all checks pass, resume scenario wire manipulation commands
-                # status = robot_control.move_to_target(GRASPING_ARM, 'sleep')
-                # status = robot_control.set_gripper(GRASPING_ARM, "open")
+            print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Rear cam identification successful, send grasping arm for retrieval")
 
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
-                # print(e)
-                # If rear camera fails, switch to search pattern
-                print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Rear camera view attempt failed, initiate search routine")
-                success, message = set_cam_spec_service(True) # Swap to arm cam
+            ### Diego's code to move aside obstructing cable
+            if (len(pick) > 0 and len(pull) > 0):
+                # Get grasp orientation as quaternion 
+                grasp_rotm, grasp_quat = curve.get_wire_grasp_orientation(np.transpose(pick),np.transpose(pull))
 
-                ### Initiate Spiral searching
-                print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Initiate search routine with arm cam")
-                # Begin search
-                success, message = set_cam_spec_service(True) # Swap to arm cam
-                sleep(2.5)
-                
-                searchRoutine = SC.SearchRoutine("left", "right")
-                arm_search = searchRoutine.search(check_subnodes=True)
-    
-            finally:
-                if rear_search:
-                    print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Rear cam identification successful, send grasping arm for retrieval")
+                ###### Robot Control Setup ########
+                # robot_b = left
+                # robot_a = right
+                print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Initiating Robots ")
 
-                    status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_mounted_cam")
-                    status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_mounted_cam")
-                        
-                if arm_search:
-                    print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Arm cam search successful, send grasping arm for retrieval")
+                # Set the Wire Grasp Pose
+                wire_grasp_pose = geometry_msgs.msg.Pose()
+                wire_grasp_pose.orientation.w = grasp_quat[3]
+                wire_grasp_pose.orientation.x = grasp_quat[0]
+                wire_grasp_pose.orientation.y = grasp_quat[1]
+                wire_grasp_pose.orientation.z = grasp_quat[2]
+                wire_grasp_pose.position.x = float(pick[0]) 
+                wire_grasp_pose.position.y = float(pick[1])
+                wire_grasp_pose.position.z = float(pick[2])
 
-                    sleep(10)
-                    status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_arm_cam_1")
-                    status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_arm_cam_1")
-                    
-                    # Search done, return view to rear cam
-                    success, message = set_cam_spec_service(False) # Swap back to rear cam
+                # Set Pull Vector
+                pull_vec = geometry_msgs.msg.Vector3()
+                pull_vec.x = float(pull[0])
+                pull_vec.y = float(pull[1])
+                pull_vec.z = float(pull[2])
 
-                # Restore connector to final pose
-                status = robot_control.set_gripper(GRASPING_ARM, "close")
-                status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal3])  
+                #Task Executor
+                if(wire_grasping_robot == "left"):
+                    object_grasping_robot = "right"
+                else:
+                    object_grasping_robot = "left"
+
+                #grasp wire
+                status = robot_control.grasp_wire(wire_grasping_robot,wire_grasp_pose,pull_vec)
+                status = robot_control.set_gripper(wire_grasping_robot, "close")
+
+            status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_mounted_cam")
+            status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_mounted_cam")
+            
+            # Restore connector to final pose
+            status = robot_control.set_gripper(GRASPING_ARM, "close")
+            status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal3])  
 
     ### END SCENARIO C4
 
