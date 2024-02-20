@@ -101,13 +101,10 @@ if __name__ == "__main__":
     # 0. Initiate unplugging of the connector from mock battery ORU
     # 1. Purposefully induce an engineered slip to require anomaly detection and correction
     # 2. Detect slip using Euclidean distance between the connector and grasping arm's end effector
-    # 3. Flag the slip and begin searching for lost connector end with spiral search algorithm
-    #    3a. Move searching arm to first search target
-    #    3b. Conduct search on search target
-    #    3c. If nothing found, move search target and arm and loop
-    # 4. Connector falls behind an obstructing 
-    # 4. If connector found, transform frame of connector from searching arm to grasping arm and initiate retrieval
-    #    Else, begin search elsewhere in environment
+    # 3. Connector falls behind an obstructing 
+    # 4. Flag the slip and identify lost connector end with rear camera
+    # 5. If connector found, transform frame of connector from searching arm to grasping arm and initiate retrieval
+    #    Else, begin spiral search elsewhere in environment
     # 5. Return retrieved connector end to originally intending stowing point 
 
     rospy.init_node('listener', anonymous=True)
