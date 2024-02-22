@@ -20,7 +20,7 @@ class PlantVision:
         # self.segmented_depth_sub = rospy.Subscriber(f"/{cam_spec}/rscamera/depth_image/points", PointCloud2, self.segmented_depth_callback, queue_size=1)
 
         #### HW Example:
-        # Setup Publisher with unique topic, and publish pc data that is consumed by subscriber callback
+        # 0.) Setup Publisher with unique topic, and publish pc data that is consumed by subscriber callback
         # self.example_pub = rospy.Publisher(...)
 
         # 1.) In terminal, see that your topic exist

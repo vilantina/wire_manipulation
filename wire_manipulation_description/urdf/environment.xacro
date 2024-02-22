@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://wiki.ros.org/xacro"
     name="environment">
 
-    <link name="panel_1">
+    <!-- <link name="panel_1">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -36,9 +36,18 @@
                 <box size="0.4572 0.02 0.6096" />
             </geometry>
         </collision>
-    </link>
+    </link> -->
 
     <link name="ground">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="5 5 0.02" />
+            </geometry>
+            <material name="Grey">
+                <color rgba="0.4 0.4 0.4 0.5" />
+            </material>
+        </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -47,7 +56,7 @@
         </collision>
     </link>
 
-    <joint name="panel_joint" type="fixed">
+    <!-- <joint name="panel_joint" type="fixed">
         <parent link="panel_1" />
         <child link="panel_2" />
         <origin xyz="-0.2286 -0.391 0" />
@@ -57,7 +66,7 @@
         <parent link="world" />
         <child link="panel_1" />
         <origin xyz="0.5334 -0.0381 0.3048" />
-    </joint>
+    </joint> -->
 
     <joint name="ground_to_world" type="fixed">
         <parent link="world" />

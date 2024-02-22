@@ -31,12 +31,27 @@ class RGBDSegmentation(object):
         rospy.sleep(0.01)
 
         # Segment RGB by Coloe
-        lower_color = np.array([170, 100,  50]) # rgb values to hsv
-        upper_color = np.array([180, 255, 255])
-        hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsv, lower_color, upper_color)
+        # HSV Ranges for plant green - https://i.stack.imgur.com/gyuw4.png
+        green_lower_color = np.array([35, 50,  50]) # rgb values to hsv
+        green_upper_color = np.array([80, 255, 255])
+        # x, y
+        green_hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
+        green_mask = cv2.inRange(green_hsv, green_lower_color, green_upper_color)
 
-        new_img = cv2.bitwise_and(cv_image, cv_image, mask = mask )
+        # Segment RGB by Coloe
+        # HSV Ranges for plant purple - https://i.stack.imgur.com/gyuw4.png
+        # purple_lower_color = np.array([100, 0,  200]) # rgb values to hsv
+        # purple_upper_color = np.array([145, 40, 255])
+        purple_lower_color = np.array([170, 100,  50]) # rgb values to hsv
+        purple_upper_color = np.array([180, 255, 255])
+        # x, y
+        purple_hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
+        purple_mask = cv2.inRange(purple_hsv, purple_lower_color, purple_upper_color)
+
+        combined_mask = cv2.bitwise_or(purple_mask, green_mask)
+
+
+        new_img = cv2.bitwise_and(cv_image, cv_image, mask = combined_mask )
 
         # dilation
         kernel = np.ones((5,5), np.uint8)

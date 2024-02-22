@@ -4,16 +4,20 @@
 
   <!-- Launch Vision-->
   <!-- Arm Mounted Camera -->
-  <include file="$(find realsense2_camera)/launch/rs_camera.launch" ns="arm_cam">
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch" ns="arm_cam" >
     <arg name="filters"                        value="pointcloud"/>
     <arg name="align_depth"                    value="true"/>
     <arg name="serial_no"                      value="109122071019"/>
-  </include>
+    <arg name="tf_prefix"                      value="d435i"/>
+    <arg name="publish_tf"                     value="false"/>
+  </include>ro
   <!-- Rear Mounted Camera -->
-  <include file="$(find realsense2_camera)/launch/rs_camera.launch" ns="mounted_cam">
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch" ns="mounted_cam" >
     <arg name="filters"                        value="pointcloud"/>
     <arg name="align_depth"                    value="true"/>
     <arg name="serial_no"                      value="151322067775"/>
+    <arg name="tf_prefix"                      value="d415"/>
+    <arg name="publish_tf"                     value="false"/>
   </include>
 
   <!-- Throttle Camera RGB and Depth Image Publishing to prevent running two cam crash-->
@@ -26,7 +30,7 @@
   <node name="arm_aligned_cam_info_throttler" type="throttle" pkg="topic_tools" args="messages /arm_cam/camera/aligned_depth_to_color/camera_info 2 /arm_cam/camera/aligned_depth_to_color/camera_info_throttled" />
 
   <!--Node for adjusting camera frame -->
-  <node pkg="vision" type="arm_camera_link.py" name="arm_camera_link" output="screen" />   
+  <!-- <node pkg="vision" type="arm_camera_link.py" name="arm_camera_link" output="screen" />    -->
   
   <!-- ARUCO TRACKING -->
   <!-- <node pkg="vision" type="arm_aruco_tracker.py" name="arm_aruco_tracker" output="screen" /> 
@@ -43,16 +47,16 @@
   <!-- ML TRACKING -->
   <!-- <node pkg="vision" type="mounted_ml_tracker.py" name="mounted_ml_tracker" output="screen"/>  -->
   <!-- DEPTH IMAGE SEGMENTED PC TRACKING -->
-  <node pkg="vision" type="depth_tracker.py" name="depth_tracker" output="screen"/>
+  <!-- <node pkg="vision" type="depth_tracker.py" name="depth_tracker" output="screen"/> -->
   
   <!-- Process Connector to produce Frame for Grasp -->
-  <node pkg="vision" type="proc_connector_pc.py" name="proc_connector_pc" output="screen"/> 
+  <!-- <node pkg="vision" type="proc_connector_pc.py" name="proc_connector_pc" output="screen"/>  -->
   <!-- Adjust connector to match orientation of camera -->
-  <node pkg="vision" type="match_connector_cam.py" name="match_connector_cam" output="screen"/> 
+  <!-- <node pkg="vision" type="match_connector_cam.py" name="match_connector_cam" output="screen"/>  -->
 
   <!-- SLIP DETECTION -->
   <!-- <node pkg="vision" type="slip_detect.py" name="left_slip_detect" output="screen" clear_params="true"/> -->
-  <node pkg="vision" type="slip_detect.py" name="right_slip_detect" output="screen" clear_params="true"/>
+  <!-- <node pkg="vision" type="slip_detect.py" name="right_slip_detect" output="screen" clear_params="true"/> -->
 
   <!-- Nodelet manager for depth PC processing -->
   <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
@@ -76,9 +80,9 @@
   <node pkg="tf2_ros" type="static_transform_publisher" name="camera_broadcaster" args="-0.3556 0.0 0.4064 0 0 0 1 world camera_link" />
 
   <!-- Launch real robots -->
-  <!-- <include file="$(find wire_manipulation_moveit_config)/launch/wire_manipulation_moveit.launch"> </include> -->
+  <include file="$(find wire_manipulation_moveit_config)/launch/wire_manipulation_moveit.launch"> </include>
   <!-- Launch demo robots -->
-  <include file="$(find wire_manipulation_moveit_config)/launch/demo.launch"> </include>
+  <!-- <include file="$(find wire_manipulation_moveit_config)/launch/demo.launch"> </include> -->
 
   <!--Dual Robot control service-->
   <node pkg="dual_robot_control" type="robot_services.py" name="robot_services" output="screen" />
