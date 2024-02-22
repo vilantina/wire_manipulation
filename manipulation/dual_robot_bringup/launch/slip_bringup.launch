@@ -4,16 +4,20 @@
 
   <!-- Launch Vision-->
   <!-- Arm Mounted Camera -->
-  <include file="$(find realsense2_camera)/launch/rs_camera.launch" ns="arm_cam">
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch" ns="arm_cam" >
     <arg name="filters"                        value="pointcloud"/>
     <arg name="align_depth"                    value="true"/>
     <arg name="serial_no"                      value="109122071019"/>
-  </include>
+    <arg name="tf_prefix"                      value="d435i"/>
+    <arg name="publish_tf"                     value="false"/>
+  </include>ro
   <!-- Rear Mounted Camera -->
-  <include file="$(find realsense2_camera)/launch/rs_camera.launch" ns="mounted_cam">
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch" ns="mounted_cam" >
     <arg name="filters"                        value="pointcloud"/>
     <arg name="align_depth"                    value="true"/>
     <arg name="serial_no"                      value="151322067775"/>
+    <arg name="tf_prefix"                      value="d415"/>
+    <arg name="publish_tf"                     value="false"/>
   </include>
 
   <!-- Throttle Camera RGB and Depth Image Publishing to prevent running two cam crash-->
