@@ -49,6 +49,9 @@ class RGBDSegmentation(object):
         purple_mask = cv2.inRange(purple_hsv, purple_lower_color, purple_upper_color)
 
         combined_mask = cv2.bitwise_or(purple_mask, green_mask)
+        ### Why cv2.bitwise_and() doesn't work:
+        # not seeing any output because there are no overlapping regions between the two masks,
+        # meaning there are no pixels that are purple or green in both masks (each mask is only one color).
 
 
         new_img = cv2.bitwise_and(cv_image, cv_image, mask = combined_mask )
