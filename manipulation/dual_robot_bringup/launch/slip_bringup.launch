@@ -43,7 +43,7 @@
   <!-- <node pkg="vision" type="search_target.py" name="search_target" output="screen" />  -->
   
   <!-- Point Cloud Classification -->
-  <node pkg="vision" type="rgbd_segmentation.py" name="rgbd_segmentation" output="screen"/> 
+  <!-- <node pkg="vision" type="rgbd_segmentation.py" name="rgbd_segmentation" output="screen"/>  -->
   <!-- ML TRACKING -->
   <!-- <node pkg="vision" type="mounted_ml_tracker.py" name="mounted_ml_tracker" output="screen"/>  -->
   <!-- DEPTH IMAGE SEGMENTED PC TRACKING -->

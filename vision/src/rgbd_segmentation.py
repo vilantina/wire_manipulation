@@ -4,6 +4,7 @@ from sensor_msgs.msg import Image, CameraInfo
 from cv_bridge import CvBridge,CvBridgeError
 import cv2
 import numpy as np 
+import colorsys
 
 class RGBDSegmentation(object):
     def __init__(self, cam_spec : str = "mounted_cam"):
@@ -28,7 +29,8 @@ class RGBDSegmentation(object):
 
     def plant_rgb_callback(self, data, args):
         try:
-            cv_image = self.bridge_object.imgmsg_to_cv2(data, desired_encoding="bgr8")
+            print(data)
+            cv_image = self.bridge_object.imgmsg_to_cv2(data, desired_encoding="rgb8")
         except CvBridgeError as e:
             print(e)
         rospy.sleep(0.01)
@@ -41,54 +43,72 @@ class RGBDSegmentation(object):
         }
 
         # print(data.height, data.width) # 720 1280
-        for v in range(data.width): #1280px
-            if v == 0 or v == 1279:
+        for w_i in range(data.width): #1280px
+            if w_i == 0 or w_i == 1279:
                 # check the whole height, 
                 # meaning we for loop down w
                 pass
                 # for w in data.height:
                 #     b, g, r = cv_image[y, x]
             else:
-                # we only check w's 0 or 719 at the current v
+                # we only check w's 0 or 719 at the current w_i
+                # print(w_i)
 
                 # top 
-                b, g, r = cv_image[0, v] # [y, x]
-                # check this bgr
-                top_color_check_bool = self.check_color(b,g,r)
-                # if the check is green or purple, break
-                if top_color_check_bool == True:
-                    view_analysis_count["top"] = view_analysis_count["top"] + 1 # increase counter for top
+                r, g, b = cv_image[0, w_i] # [y, x]
+                # print(r,g,b)
+                # # check this bgr
+                # top_color_check_bool = self.check_color(b,g,r)
+                # # if the check is green or purple
+                # if top_color_check_bool == True:
+                #     view_analysis_count["top"] = view_analysis_count["top"] + 1 # increase counter for top
 
-                # bottom
-                b, g, r = cv_image[719, v]
-                # check this bgr
-                bottom_color_check_bool = self.check_color(b,g,r)
-                # if the check is green or purple, break
-                if bottom_color_check_bool == True:
-                    view_analysis_count["bottom"] = view_analysis_count["bottom"] + 1 # increase counter for top
+                # # bottom
+                # b, g, r = cv_image[719, w_i]
+                # # check this bgr
+                # bottom_color_check_bool = self.check_color(b,g,r)
+                # # if the check is green or purple
+                # if bottom_color_check_bool == True:
+                #     view_analysis_count["bottom"] = view_analysis_count["bottom"] + 1 # increase counter for top
 
         threshold_value = 25
         threshold_check = any(value > threshold_value for value in view_analysis_count.values())
+        
+        # print(threshold_check)
+        # print(view_analysis_count)
         if threshold_check == True:
             # let us know, determine the direction for the arm to move
-            print(threshold_check)
-            print(view_analysis_count)
+            pass
 
     def check_color(self, b,g,r):
+        threshold = 200
+        b_check = b >= threshold # and b <= 255
+        g_check = g >= threshold
+        r_check = r >= threshold
+        return b_check and g_check and r_check
+    
         # we receive the bgr from the image, 
         # now check if that bgr value is within a
         # range of green or purple we set
+        # print(colorsys.hsv_to_rgb(0,0,0))
+        # print(colorsys.hsv_to_rgb(10,10,10/255))
 
         # Define the lower and upper bounds of the green color range in BGR format
-        lower_green = np.array([0, 50, 0], dtype=np.uint8)
-        upper_green = np.array([50, 255, 50], dtype=np.uint8)
+        # lower_green = np.array([0, 0, 50], dtype=np.uint8)
+        # upper_green = np.array([180, 50, 255], dtype=np.uint8)
+                                # 180, 255, 255
         
         # our bgr value
-        bgr_value = np.array([b, g, r], dtype=np.uint8)
+        # bgr_value = np.array([b, g, r], dtype=np.uint8)
+        # bgr_color = np.uint8([[[b, g, r]]])
+
+        # hsv_color = cv2.cvtColor(bgr_color, cv2.COLOR_BGR2HSV)
+
 
         # Create a mask to check if the BGR value is within the green range
-        mask = cv2.inRange(bgr_value, lower_green, upper_green)
-        return mask[1][0] == 255 # if mask value is 255, BGR value is within the green range
+        # mask = cv2.inRange(hsv_color, lower_green, upper_green)
+        # print(mask)
+        # return mask[0][0] == 255 # if mask value is 255, BGR value is within the green range
             
 
 
