@@ -12,6 +12,7 @@ Panels:
         - /DepthCloud2
         - /DepthCloud2/Auto Size1
         - /DepthCloud3/Auto Size1
+        - /PointCloud21
       Splitter Ratio: 0.5
     Tree Height: 244
   - Class: rviz/Help
@@ -934,7 +935,7 @@ Visualization Manager:
       Decay Time: 0
       Depth Map Topic: /seg_depth/image_raw
       Depth Map Transport Hint: raw
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -948,6 +949,34 @@ Visualization Manager:
       Size (Pixels): 3
       Style: Flat Squares
       Topic Filter: true
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: false
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Spheres
+      Topic: /rscamera/depth/points
+      Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -967,7 +996,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.050224542617798
+      Distance: 2.2962515354156494
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -983,9 +1012,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.49000048637390137
+      Pitch: 0.3950004577636719
       Target Frame: world
-      Yaw: 2.231771945953369
+      Yaw: 2.5317718982696533
     Saved: ~
 Window Geometry:
   Displays:

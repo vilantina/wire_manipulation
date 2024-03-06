@@ -195,9 +195,6 @@ if __name__ == "__main__":
         status = robot_control.move_to_target(wire_grasping_robot, 'sleep')
         status = robot_control.move_to_target(object_grasping_robot, 'sleep')
 
-        # Set both arms to a ready state
-        status = robot_control.move_to_target(wire_grasping_robot, 'ready')
-        status = robot_control.move_to_target(object_grasping_robot, 'ready')
         # Open grippers on both arms
         status = robot_control.set_gripper(wire_grasping_robot, "open")
         status = robot_control.set_gripper(object_grasping_robot, "open")
@@ -207,7 +204,7 @@ if __name__ == "__main__":
         joint_goal = [x * np.pi / 180 for x in joint_goal]
         status = robot_control.move_to_joint_goal(object_grasping_robot, joint_goal)
         sleep(3)
-        status = robot_control.move_to_target(object_grasping_robot, 'ready')
+        status = robot_control.move_to_target(object_grasping_robot, 'sleep')
 
         #grasp wire
         status = robot_control.grasp_wire(wire_grasping_robot,wire_grasp_pose,pull_vec)
@@ -218,11 +215,11 @@ if __name__ == "__main__":
         status = robot_control.set_gripper(object_grasping_robot, "close")
         
         # sleep right arm after grasping object
-        status = robot_control.move_to_target(object_grasping_robot, 'ready')
+        status = robot_control.move_to_target(object_grasping_robot, 'sleep')
 
         # sleep left arm after brushing wire
         status = robot_control.set_gripper(wire_grasping_robot, "open")
-        status = robot_control.move_to_target(wire_grasping_robot, 'ready')
+        status = robot_control.move_to_target(wire_grasping_robot, 'sleep')
         
     #rospy.spin()
     
