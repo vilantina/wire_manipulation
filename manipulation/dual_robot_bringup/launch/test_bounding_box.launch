@@ -1,0 +1,38 @@
+<launch>
+
+    <arg name="use_rviz" default="true"/>
+    <arg name="rviz_config" default="$(find dual_robot_bringup)/config/rviz.rviz"/>
+  
+    <!-- Launch Vision-->
+    <!-- Rear Mounted Camera -->
+    <!-- <include file="$(find realsense2_camera)/launch/rs_camera.launch" ns="mounted_cam">
+      <arg name="filters"                        value="pointcloud"/>
+      <arg name="align_depth"                    value="true"/>
+      <arg name="serial_no"                      value="151322067775"/>
+    </include> -->
+
+    <!-- Arm Mounted Camera -->
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch" ns="arm_cam">
+        <arg name="filters"                        value="pointcloud"/>
+        <arg name="align_depth"                    value="true"/>
+        <arg name="serial_no"                      value="109122071019"/>
+      </include>
+  
+  
+    <!--Nodes involved with ArUco marker and coordinate monitoring-->
+    <node pkg="vision" type="plant_bounding_box.py" name="plant_bounding_box" output="screen" /> 
+
+  <!-- Conditionally launch RViz based on the Use_rviz argument -->
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" output="screen" if="$(arg use_rviz)"/> -->
+
+  <!-- Launch real robots -->
+  <include file="$(find wire_manipulation_moveit_config)/launch/wire_manipulation_moveit.launch"> </include>
+  <!-- Launch demo robots -->
+  <!-- <include file="$(find wire_manipulation_moveit_config)/launch/demo.launch"> </include> -->
+
+  <!--Dual Robot control service-->
+  <node pkg="dual_robot_control" type="robot_services.py" name="robot_services" output="screen" />
+
+  
+  </launch>
+  
