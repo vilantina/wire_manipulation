@@ -34,6 +34,7 @@ class DepthCloudTracker:
         self.depth_adjustment = 0.05
         self.middle_elems = middle_elems
 
+        # THIS IS THE POSITION POINT FROM THE SEGMENTED IMAGE
         self.converted_pt = [0.0, 0.0, 0.0]
 
     def convert_image_3d_point(self, depth : float):
@@ -42,6 +43,7 @@ class DepthCloudTracker:
             return [result[2], -result[0], -result[1]]
     
     def segmented_depth_callback(self, msg):
+        # get midpoint of the segmented pointcloud
         try:
             sum_pt = 0.0
             num_pt = 0

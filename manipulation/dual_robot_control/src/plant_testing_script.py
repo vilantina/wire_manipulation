@@ -34,11 +34,7 @@ if __name__ == "__main__":
     SEARCHING_ARM_ID = "a_bot_arm" if SEARCHING_ARM == "right" else "b_bot_arm"
     arm_ids = ["left","right"]
     
-    # Send object grasp robot to pre-grasp, encountering wire
-    joint_goal_0 = [0, -97, 67, 0, 56, 0]
-    status = robot_control.move_to_joint_goal(SEARCHING_ARM, [x * np.pi / 180 for x in joint_goal_0])
-    # do something - process the pointcloud
-    joint_goal_0 = [0, -97, 67, 0, 56, 0]
+    joint_goal_0 = [0, -39, 82, 0, -36, 0]
     status = robot_control.move_to_joint_goal(SEARCHING_ARM, [x * np.pi / 180 for x in joint_goal_0])
 
 
