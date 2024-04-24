@@ -89,10 +89,7 @@ if __name__ == "__main__":
     # Bring in front of camera, slip
     joint_goal2 = [37, 19, -61, 154, -87, -62] # slip enroute angled down
     joint_goal3 = [32, -7, -3, -78, 35, 74] # final stowing
-
-    joint_goal_prepose = [-20, -31, 28, 52, 84, 9]
-    joint_goal_grasp = [30, -12, 36, 111, -14, -40]
-
+    
     listener = tf.TransformListener()
     active_duration = 5
 
@@ -126,72 +123,18 @@ if __name__ == "__main__":
         slip_flag = True
         if (slip_flag): # If slip detected, move arm to retrieve wire
             print("STATUS: Slip detected, initiate retrieval")
-            sleep(5) # wait 5-10 real time seconds for slipped wire to settle
+            sleep(10) # wait 5-10 real time seconds for slipped wire to settle
             status = robot_control.move_to_target(GRASPING_ARM, 'sleep')
             status = robot_control.set_gripper(GRASPING_ARM, "open")
 
-            rear_search = False
-            arm_search = False
-            # First use rear camera to detect existence and location of connector
-            try:
-                ## Checks that rear mounted camera has sight of the connector (from rear mounted cam perspective)
-                # 1. Check that the connector frame exists 
-                conn_frame_exists = check_frame_exists(listener, "world", "line_grasp_mounted_cam") # returns none if exists
-                # 2. Check that the timestamp of the last active frame is within duration of current time
-                curr = rospy.Time.now()
-                conn_time_active = check_active_range(CURR_REAR_TIMESTAMP, active_duration)
-                # 3. Check that the connector frame has been active over a given duration
-                conn_update_active = check_connector_noise(listener, "world", "line_grasp_mounted_cam", active_duration) # false means swap to arm
-                # Verify active checks, and throw an exception to begin arm search if non-active
-                # sleep(3)
-                active_flag = conn_frame_exists and conn_time_active and conn_update_active
-                print(f"ACTIVE FLAG: {active_flag}")
-                if active_flag == False or active_flag == True: # testing, delete this later
-                    raise(tf.LookupException) # uncomment for initing search
-                else:
-                    rear_search = True
-            
-                # # If all checks pass, resume scenario wire manipulation commands
-                # status = robot_control.move_to_target(GRASPING_ARM, 'sleep')
-                # status = robot_control.set_gripper(GRASPING_ARM, "open")
+        print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Rear cam identification successful, send grasping arm for retrieval")
 
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
-                # print(e)
-                # If rear camera fails, switch to search pattern
-                print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Rear camera view attempt failed, initiate search routine")
-                success, message = set_cam_spec_service(True) # Swap to arm cam
-
-                ### Initiate Spiral searching
-                print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Initiate search routine with arm cam")
-                # Begin search
-                success, message = set_cam_spec_service(True) # Swap to arm cam
-                sleep(2.5)
-                
-                searchRoutine = SC.SearchRoutine("left", "right")
-                arm_search = searchRoutine.search(check_subnodes=True)
-    
-            finally:
-                if rear_search:
-                    print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Rear cam identification successful, send grasping arm for retrieval")
-
-                    status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_mounted_cam")
-                    status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_mounted_cam")
-                        
-                if arm_search:
-                    print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Arm cam search successful, send grasping arm for retrieval")
-                    sleep(10)
-                    status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_arm_cam")
-                    status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_arm_cam")
-                    if status == None:
-                        status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal_prepose])
-                        status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal_grasp])
-
-                    # Search done, return view to rear cam
-                    # success, message = set_cam_spec_service(False) # Swap back to rear cam
-
-                # Restore connector to final pose
-                status = robot_control.set_gripper(GRASPING_ARM, "close")
-                status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal3])  
+        status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_mounted_cam")
+        status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_mounted_cam")
+                    
+        # Restore connector to final pose
+        status = robot_control.set_gripper(GRASPING_ARM, "close")
+        status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal3])  
 
     ### END SCENARIO C4
 

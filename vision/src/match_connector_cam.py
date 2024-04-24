@@ -89,7 +89,7 @@ def main():
         # perp: [0, -0.1, 0.05], [-math.pi/2, 0, 0, 1])
         transform_connector_grasp(f"perp_line_grasp_{arm_cam_spec}", f"match_grasp_{arm_cam_spec}", [-0.05, -0.0, 0.1], [math.pi/6, math.pi/9, -math.pi/6, 1])
         # Publish prepose here                                                                    # +forward/-backward, +left/-right, +up/-down
-        # transform_connector_grasp(f"prepose_grasp_{arm_cam_spec}", f"perp_line_grasp_{arm_cam_spec}", [-0., 0, 0], [0, 0, 0, 1])
+        transform_connector_grasp(f"prepose_grasp_{arm_cam_spec}", f"perp_line_grasp_{arm_cam_spec}", [-0.2, 0, 0], [0, 0, 0, 1])
 
         # 2nd subnode save (side)
         ### Arm mounted cam to match arm camera transformers
