@@ -72,7 +72,7 @@ class MountedArucoTracker:
                 self.marker_dict[i]["rvec"] = rvec
 
                 t.header.stamp = rospy.Time.now()
-                t.header.frame_id = "camera_color_optical_frame"
+                t.header.frame_id = "d415_color_optical_frame"
                 t.child_frame_id = "mounted_aruco_{}".format(i)
                 t.transform.translation.x = tvec.reshape(3)[0]
                 t.transform.translation.y = tvec.reshape(3)[1]

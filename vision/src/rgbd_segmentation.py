@@ -26,6 +26,9 @@ class RGBDSegmentation(object):
     def rgb_callback(self, data, args):
         try:
             cv_image = self.bridge_object.imgmsg_to_cv2(data, desired_encoding="bgr8")
+            # resized_frame = cv2.resize(new_img, (0,0), fx=0.80, fy=0.80)
+            # cv2.imshow('Preview', cv_image) 
+            # cv2.waitKey(1)
         except CvBridgeError as e:
             print(e)
         rospy.sleep(0.01)

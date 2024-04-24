@@ -426,9 +426,9 @@ class ConnectorPC():
         t.header.frame_id = source
         t.child_frame_id = "{}_{}".format(child_name, source)
 
-        t.transform.translation.x = pos_adj[0] # Offset arm to right by value meters
-        t.transform.translation.y = pos_adj[1]
-        t.transform.translation.z = pos_adj[2] # Too close to wall, move back .05m
+        t.transform.translation.x = pos_adj[0] # -closer/+further from cam
+        t.transform.translation.y = pos_adj[1] # -right/+left
+        t.transform.translation.z = pos_adj[2] #- 0.025 # 
 
         # Calculate orientation
         x1, y1, z1 = self.min_pt  # Start point
@@ -585,7 +585,7 @@ def main():
         ### Rear mounted cam transforms
         rear_proc_pc.transform_connector_pose("pose", f"{position_src}_{rear_cam_spec}", [0,0,0], [0, 0, 0, 1])
         rear_proc_pc.transform_connector_grasp(f"line_grasp_{rear_cam_spec}", f"pose_{position_src}_{rear_cam_spec}", [0, 0, 0], [math.pi, 0, math.pi/2, 1])
-        
+
         ### Arm mounted cam transforms
         arm_proc_pc.transform_connector_pose("pose", f"{position_src}_{arm_cam_spec}", [0,0,0], [0, 0, 0, 1])
         arm_proc_pc.transform_connector_grasp(f"line_grasp_{arm_cam_spec}", f"pose_{position_src}_{arm_cam_spec}", [0, 0, 0], [math.pi, 0, math.pi/2, 1])
