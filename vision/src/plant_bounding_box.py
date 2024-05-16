@@ -10,7 +10,7 @@ class RGBDSegmentation(object):
     def __init__(self, cam_spec : str = "arm_cam"):
 
         self.rgb_img_sub = rospy.Subscriber(f"/{cam_spec}/camera/color/image_raw", Image, self.rgb_callback, (cam_spec), queue_size=1)
-
+        # ROS images -> cv bridge -> OpenCV CV images -> ??? -> stl or ply
 
         # Publishers with segmented image info
         self.segmented_image_pub = rospy.Publisher("segmented_image", Image, queue_size=1)
@@ -29,7 +29,7 @@ class RGBDSegmentation(object):
 
         hsv_image = cv2.cvtColor(blur_image, cv2.COLOR_BGR2HSV)
 
-        # Segment RGB by Coloe
+        # Segment RGB by Color
         # HSV Ranges for plant green - https://i.stack.imgur.com/gyuw4.png
         green_lower_color = np.array([35, 50,  50]) # rgb values to hsv
         green_upper_color = np.array([80, 255, 255])

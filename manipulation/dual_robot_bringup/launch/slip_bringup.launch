@@ -76,6 +76,14 @@
     <remap from="points" to="/arm_cam/rscamera/depth_image/points"/>
   </node>
 
+  <node pkg="nodelet" type="nodelet" name="nodelet3"
+    args="load depth_image_proc/point_cloud_xyz nodelet_manager">
+    <remap from="camera_info" to="/arm_cam/camera/aligned_depth_to_color/camera_info"/>
+    <remap from="image_rect" to="/arm_cam/camera/aligned_depth_to_color/image_raw"/>
+
+    <remap from="points" to="/arm_cam/rscamera/full_depth_image/points"/>
+  </node>
+
   <!--Camera Transform-->
   <node pkg="tf2_ros" type="static_transform_publisher" name="camera_broadcaster" args="-0.3556 0.0 0.4064 0 0 0 1 world camera_link" />
 
