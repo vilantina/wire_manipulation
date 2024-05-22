@@ -79,11 +79,11 @@ def main():
 
     ##### Call saving
     ### Save color BGR image
-    # save_pointcloud.save_color_img()
+    save_pointcloud.save_color_img()
     ### Save full depth image as pointcloud in .ply format
-    # save_pointcloud.save_full_depth_img()
+    save_pointcloud.save_full_depth_img()
     ### Save segmented depth image as pointcloud in .ply format
-    # save_pointcloud.save_segmented_depth_img()
+    save_pointcloud.save_segmented_depth_img()
 
 
 
