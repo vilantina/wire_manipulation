@@ -23,19 +23,30 @@ SC = importlib.util.module_from_spec(spec)
 sys.modules["RobotControl"] = SC
 spec.loader.exec_module(SC)
 
+def set_pose_spec_service(value : Bool):
+     rospy.wait_for_service("/set_pose_spec")
+     try:
+         set_pose_spec = rospy.ServiceProxy('/set_pose_spec', SetBool)
+         response = set_pose_spec(value)
+         return response.success, response.message
+     except rospy.ServiceException as e:
+         print("Service call failed: %s"%e)
+
 #*** Node Starts Here ***#
 if __name__ == "__main__":
     rospy.init_node('listener', anonymous=True)
-    robot_control = RobotControl()
+    # robot_control = RobotControl()
 
-    GRASPING_ARM    = "right"
-    GRASPING_ARM_ID = "a_bot_arm" if GRASPING_ARM == "right" else "b_bot_arm"
-    SEARCHING_ARM   = "left"
-    SEARCHING_ARM_ID = "a_bot_arm" if SEARCHING_ARM == "right" else "b_bot_arm"
-    arm_ids = ["left","right"]
+    # GRASPING_ARM    = "right"
+    # GRASPING_ARM_ID = "a_bot_arm" if GRASPING_ARM == "right" else "b_bot_arm"
+    # SEARCHING_ARM   = "left"
+    # SEARCHING_ARM_ID = "a_bot_arm" if SEARCHING_ARM == "right" else "b_bot_arm"
+    # arm_ids = ["left","right"]
     
-    joint_goal_0 = [0, -39, 82, 0, -36, 0]
-    status = robot_control.move_to_joint_goal(SEARCHING_ARM, [x * np.pi / 180 for x in joint_goal_0])
-
+    # joint_goal_0 = [0, -39, 82, 0, -36, 0]
+    # status = robot_control.move_to_joint_goal(SEARCHING_ARM, [x * np.pi / 180 for x in joint_goal_0])
+    success, message = set_pose_spec_service(True) # Swap back to rear cam
+    print(success, message)
+    # success, message = set_pose_spec_service(False) # Swap back to rear cam
 
     # rospy.spin()
