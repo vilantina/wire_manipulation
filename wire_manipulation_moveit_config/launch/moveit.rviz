@@ -340,7 +340,7 @@ Visualization Manager:
         Goal State Color: 250; 128; 0
         Interactive Marker Size: 0
         Joint Violation Color: 255; 0; 255
-        Planning Group: a_bot_gripper
+        Planning Group: b_bot_arm
         Query Goal State: true
         Query Start State: false
         Show Workspace: false
@@ -678,12 +678,6 @@ Visualization Manager:
           Value: false
         a_bot_wrist_link:
           Value: false
-        adj_arm_aruco_0:
-          Value: true
-        adj_mounted_aruco_0:
-          Value: false
-        arm_aruco_0:
-          Value: true
         arm_camera_link:
           Value: false
         b_bot_base_link:
@@ -711,6 +705,16 @@ Visualization Manager:
         b_bot_upper_forearm_link:
           Value: false
         b_bot_wrist_link:
+          Value: false
+        camera_aligned_depth_to_color_frame:
+          Value: false
+        camera_color_frame:
+          Value: false
+        camera_color_optical_frame:
+          Value: false
+        camera_depth_frame:
+          Value: false
+        camera_depth_optical_frame:
           Value: false
         camera_link:
           Value: false
@@ -762,15 +766,41 @@ Visualization Manager:
           Value: false
         d435i_link:
           Value: false
+        depth_arm_cam:
+          Value: false
         depth_mounted_cam:
           Value: false
         ground:
           Value: false
-        mounted_aruco_0:
+        line_grasp_arm_cam:
+          Value: false
+        line_grasp_mounted_cam:
           Value: true
+        match_grasp_arm_cam:
+          Value: false
+        match_grasp_arm_cam_1:
+          Value: true
+        match_grasp_mounted_cam:
+          Value: false
         panel_1:
           Value: false
         panel_2:
+          Value: false
+        perp_line_grasp_arm_cam:
+          Value: false
+        perp_line_grasp_arm_cam_1:
+          Value: false
+        perp_line_grasp_mounted_cam:
+          Value: false
+        pose_depth_arm_cam:
+          Value: false
+        pose_depth_mounted_cam:
+          Value: false
+        prepose_grasp_arm_cam:
+          Value: false
+        prepose_grasp_arm_cam_1:
+          Value: false
+        prepose_grasp_mounted_cam:
           Value: false
         world:
           Value: true
@@ -781,9 +811,6 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        arm_aruco_0:
-          adj_arm_aruco_0:
-            {}
         world:
           a_bot_base_link:
             a_bot_shoulder_link:
@@ -825,6 +852,17 @@ Visualization Manager:
                               d435i_color_frame:
                                 d435i_color_optical_frame:
                                   {}
+                                depth_arm_cam:
+                                  pose_depth_arm_cam:
+                                    line_grasp_arm_cam:
+                                      match_grasp_arm_cam:
+                                        perp_line_grasp_arm_cam:
+                                          prepose_grasp_arm_cam:
+                                            {}
+                                      match_grasp_arm_cam_1:
+                                        perp_line_grasp_arm_cam_1:
+                                          prepose_grasp_arm_cam_1:
+                                            {}
                               d435i_depth_frame:
                                 d435i_depth_optical_frame:
                                   {}
@@ -838,18 +876,28 @@ Visualization Manager:
                                 d435i_infra2_optical_frame:
                                   {}
           camera_link:
-            {}
+            camera_aligned_depth_to_color_frame:
+              camera_color_optical_frame:
+                {}
+            camera_color_frame:
+              {}
+            camera_depth_frame:
+              camera_depth_optical_frame:
+                {}
           d415_bottom_screw_frame:
             d415_link:
               arm_camera_link:
                 {}
               d415_color_frame:
                 d415_color_optical_frame:
-                  mounted_aruco_0:
-                    adj_mounted_aruco_0:
-                      {}
-                depth_mounted_cam:
                   {}
+                depth_mounted_cam:
+                  pose_depth_mounted_cam:
+                    line_grasp_mounted_cam:
+                      match_grasp_mounted_cam:
+                        perp_line_grasp_mounted_cam:
+                          prepose_grasp_mounted_cam:
+                            {}
               d415_depth_frame:
                 d415_depth_optical_frame:
                   {}
@@ -934,9 +982,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5697978734970093
+      Pitch: 0.5497978329658508
       Target Frame: world
-      Yaw: 3.111746311187744
+      Yaw: 3.3817458152770996
     Saved: ~
 Window Geometry:
   Displays:

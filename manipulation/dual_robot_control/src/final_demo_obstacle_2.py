@@ -181,12 +181,14 @@ if __name__ == "__main__":
                     print(Fore.GREEN + "STATUS:= " + Fore.WHITE + "Arm cam search successful, send grasping arm for retrieval")
 
                     sleep(10)
-                    status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_arm_cam_1")
-                    status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_arm_cam_1")
-                    
-                    if status == None:
-                        status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal_prepose])
+                    ### SET DEPENDING ON ARM BEHAVIOR
+                    mode = True
+                    if mode == True:
+                        status = robot_control.move_to_frame(GRASPING_ARM, "prepose_grasp_arm_cam_1")
+                        status = robot_control.move_to_frame(GRASPING_ARM, "perp_line_grasp_arm_cam_1")
+                    elif mode == False:
                         status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal_grasp])
+                        status = robot_control.move_to_joint_goal(GRASPING_ARM, [x * np.pi / 180 for x in joint_goal_prepose])
 
                     # Search done, return view to rear cam
                     # success, message = set_cam_spec_service(False) # Swap back to rear cam
