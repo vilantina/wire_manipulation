@@ -119,7 +119,7 @@ def main():
     calibration = cam_calibration.CameraCalibration()
 
     # Defiine arguments to pass to calibrate() parameters
-    directory_path = "/home/drojas/dlo_ws/src/wire_manipulation/vision/resources/calibration/mounted_cam/*"
+    directory_path = "/home/drojas/plant_ws/src/wire_manipulation/vision/resources/calibration/mounted_cam/*"
     img_file_prefix = "img_"
     img_format = ".jpg"
     square_size = 0.0127 # in meters; each square is 0.5inch

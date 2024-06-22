@@ -112,7 +112,7 @@ finally:
 # # CAMERA_SRC = cv2.VideoCapture(4) # Depth cam device index 4; use when running without ROS
 # # Load classes for identification in output frame
 # classes = []
-# with open("/home/drojas/dlo_ws/src/wire_manipulation/dnn_model/classes.txt", "r") as file_obj:
+# with open("/home/drojas/plant_ws/src/wire_manipulation/dnn_model/classes.txt", "r") as file_obj:
 #     for class_name in file_obj.readlines():
 #         classes.append(class_name.strip())
 
@@ -128,7 +128,7 @@ finally:
 #         self.depth_cam_info = CameraInfo()
 
 #         # cv2 ML Models
-#         self.net = cv2.dnn.readNet("/home/drojas/dlo_ws/src/wire_manipulation/dnn_model/yolov4-tiny.weights", "/home/drojas/dlo_ws/src/wire_manipulation/dnn_model/yolov4-tiny.cfg")
+#         self.net = cv2.dnn.readNet("/home/drojas/plant_ws/src/wire_manipulation/dnn_model/yolov4-tiny.weights", "/home/drojas/plant_ws/src/wire_manipulation/dnn_model/yolov4-tiny.cfg")
 #         self.model = cv2.dnn_DetectionModel(self.net)
 
 #     def set_model_params(self, size, scale):
