@@ -45,7 +45,7 @@
   </node>
   
   
-    <!--Nodes involved with ArUco marker and coordinate monitoring-->
+    <!--Nodes involved with drawing plant bounding box -->
     <node pkg="vision" type="plant_bounding_box.py" name="plant_bounding_box" output="screen" /> 
 
   <!-- Conditionally launch RViz based on the Use_rviz argument -->
