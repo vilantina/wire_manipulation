@@ -18,7 +18,7 @@ from time import sleep
 
 class SavePointcloud(object):
     # To launch just this file (in a brand new terminal): rosrun vision save_point_cloud.py
-    # Images saved to /home/drojas/dlo_ws/src/wire_manipulation
+    # Images saved to /home/drojas/plant_ws/src/wire_manipulation
     def __init__(self, cam_spec : str = "arm_cam"):
         ### Color BGR Image Subscriber
         # Approach: ROS images -> cv bridge -> OpenCV CV images -> OpenCV converts and saves as png/jpg

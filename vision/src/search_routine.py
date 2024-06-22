@@ -12,7 +12,7 @@ from geometry_msgs.msg import TransformStamped
 # Temp solution - Fix this import to something like `from dual_robot_control.robot_services import RobotControl`
 import importlib.util
 import sys
-spec = importlib.util.spec_from_file_location("RobotControl", "/home/drojas/dlo_ws/src/wire_manipulation/manipulation/dual_robot_control/src/robot_services.py")
+spec = importlib.util.spec_from_file_location("RobotControl", "/home/drojas/plant_ws/src/wire_manipulation/manipulation/dual_robot_control/src/robot_services.py")
 RC = importlib.util.module_from_spec(spec)
 sys.modules["RobotControl"] = RC
 spec.loader.exec_module(RC)

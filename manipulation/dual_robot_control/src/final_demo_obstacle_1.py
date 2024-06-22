@@ -18,7 +18,7 @@ from robot_services import RobotControl
 # Temp solution - Fix this import to something like `from dual_robot_control.robot_services import RobotControl`
 import importlib.util
 import sys
-spec = importlib.util.spec_from_file_location("SearchRoutine", "/home/drojas/dlo_ws/src/wire_manipulation/vision/src/search_routine.py")
+spec = importlib.util.spec_from_file_location("SearchRoutine", "/home/drojas/plant_ws/src/wire_manipulation/vision/src/search_routine.py")
 SC = importlib.util.module_from_spec(spec)
 sys.modules["RobotControl"] = SC
 spec.loader.exec_module(SC)

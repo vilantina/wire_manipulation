@@ -52,9 +52,9 @@
   <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" output="screen" if="$(arg use_rviz)"/> -->
 
   <!-- Launch real robots -->
-  <include file="$(find wire_manipulation_moveit_config)/launch/wire_manipulation_moveit.launch"> </include>
+  <!-- <include file="$(find wire_manipulation_moveit_config)/launch/wire_manipulation_moveit.launch"> </include> -->
   <!-- Launch demo robots -->
-  <!-- <include file="$(find wire_manipulation_moveit_config)/launch/demo.launch"> </include> -->
+  <include file="$(find wire_manipulation_moveit_config)/launch/demo.launch"> </include>
 
   <!--Dual Robot control service-->
   <node pkg="dual_robot_control" type="robot_services.py" name="robot_services" output="screen" />
