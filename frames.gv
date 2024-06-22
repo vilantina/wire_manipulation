@@ -1,0 +1,18 @@
+digraph G {
+"world" -> "a_bot_base_link"[label="Broadcaster: /virtual_joint_broadcaster_0\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1684971810.837 sec old)\nBuffer length: 0.000 sec\n"];
+"world" -> "camera_link"[label="Broadcaster: /camera_broadcaster\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1684971810.837 sec old)\nBuffer length: 0.000 sec\n"];
+"world" -> "b_bot_base_link"[label="Broadcaster: /virtual_joint_broadcaster_1\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1684971810.837 sec old)\nBuffer length: 0.000 sec\n"];
+"camera_link" -> "camera_depth_frame"[label="Broadcaster: /camera/realsense2_camera_manager\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1684971810.837 sec old)\nBuffer length: 0.000 sec\n"];
+"camera_depth_frame" -> "camera_depth_optical_frame"[label="Broadcaster: /camera/realsense2_camera_manager\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1684971810.837 sec old)\nBuffer length: 0.000 sec\n"];
+"camera_link" -> "camera_color_frame"[label="Broadcaster: /camera/realsense2_camera_manager\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1684971810.837 sec old)\nBuffer length: 0.000 sec\n"];
+"camera_aligned_depth_to_color_frame" -> "camera_color_optical_frame"[label="Broadcaster: /camera/realsense2_camera_manager\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1684971810.837 sec old)\nBuffer length: 0.000 sec\n"];
+"camera_link" -> "camera_aligned_depth_to_color_frame"[label="Broadcaster: /camera/realsense2_camera_manager\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1684971810.837 sec old)\nBuffer length: 0.000 sec\n"];
+"aruco_0" -> "aruco_wire_rotation_0"[label="Broadcaster: /aruco_rotation_transform\nAverage rate: 60.203 Hz\nMost recent transform: 1684971810.830 ( 0.007 sec old)\nBuffer length: 4.933 sec\n"];
+"camera_color_optical_frame" -> "aruco_0"[label="Broadcaster: /aruco_tracker\nAverage rate: 30.182 Hz\nMost recent transform: 1684971810.809 ( 0.028 sec old)\nBuffer length: 4.837 sec\n"];
+"camera_color_optical_frame" -> "aruco_1"[label="Broadcaster: /aruco_tracker\nAverage rate: 30.182 Hz\nMost recent transform: 1684971810.809 ( 0.028 sec old)\nBuffer length: 4.837 sec\n"];
+"camera_color_optical_frame" -> "aruco_2"[label="Broadcaster: /aruco_tracker\nAverage rate: 1.042 Hz\nMost recent transform: 1684971810.509 ( 0.328 sec old)\nBuffer length: 3.838 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1684971810.837"[ shape=plaintext ] ;
+ }->"world";
+}

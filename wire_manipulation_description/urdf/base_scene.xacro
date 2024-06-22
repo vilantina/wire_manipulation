@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro"
+  name="base_scene">
+
+  <!-- World link -->
+  <link name="world" />
+
+  <!-- Environment (two panels and ground) -->
+  <xacro:include filename="$(find wire_manipulation_description)/urdf/environment.xacro" />
+
+  <!-- VX300s macro -->
+  <xacro:include filename="$(find vx300s_description)/urdf/vx300s_macro.xacro" />
+
+  <!-- realsense macro -->
+  <xacro:include filename="$(find wire_manipulation_description)/urdf/realsense/d415.urdf.xacro" />
+  <xacro:include filename="$(find realsense2_description)/urdf/_d435i.urdf.xacro" />
+
+  <!-- realsense d435i -->
+  <xacro:sensor_d435i name="d435i" parent="b_bot_ee_arm_link" use_nominal_extrinsics="true">
+    <origin xyz="0.0127 0 0.0635" />
+    <!-- <origin xyz="-1 0 1" /> -->
+  </xacro:sensor_d435i>
+
+  <xacro:sensor_d415 name="d415" parent="world" use_nominal_extrinsics="true">
+    <origin xyz="${-0.3556 - 0.0106} ${0.0 - 0.0325} ${0.4064 - 0.0125}" />
+  </xacro:sensor_d415>
+  <!-- 0.0106; 0.0325; 0.0125 -->
+
+
+  <!-- dual vx300s, a_bot and b_bot -->
+  <xacro:vx300s prefix="a_bot_" hw_interface="hardware_interface/EffortJointInterface" />
+  <xacro:vx300s prefix="b_bot_" hw_interface="hardware_interface/EffortJointInterface" />
+  <joint name="a_bot_to_world" type="fixed">
+    <parent link="world" />
+    <child link="a_bot_base_link" />
+    <origin xyz="0 -0.1778 0" />
+  </joint>
+  <joint name="b_bot_to_world" type="fixed">
+    <parent link="world" />
+    <child link="b_bot_base_link" />
+    <origin xyz="0 0.1778 0" />
+  </joint>
+
+  <!-- gazebo ros control plugin -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+
+</robot>
